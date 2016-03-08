@@ -7,6 +7,7 @@
 
 use 5.010;
 use strict;
+use Data::Dumper;
 use warnings;
 use diagnostics;
 BEGIN{
@@ -17,12 +18,45 @@ BEGIN{
 }
 no warnings 'experimental';
 
+use FindBin;
+require "$FindBin::Bin/../lib/rpn.pl";
+
 sub evaluate {
-	my $rpn = shift;
-
-	# ...
-
-	return 0;
+	#print "\n";
+	my $rpn_ = shift;
+	my @rpn = @{$rpn_};
+	#print @rpn;
+	my @stack = ();
+	for my $i (@rpn) {
+		#print(Dumper(@stack));
+		#print "out: $i\n";
+		if ($i !~/^\d+/) {
+			#print "=".$i."=\n";
+			#есть символы не числа
+			if ($i ne 'U+' && $i ne 'U-') {
+				my $prev1 = pop(@stack);
+				my $prev2 = pop(@stack);
+				if ($i eq '-' || $i eq '+' || $i eq '*' || $i eq '/') {
+					push(@stack, eval(" $prev2 ".$i." $prev1 "));
+				} else {
+					push(@stack, $prev2 ** $prev1);
+				}
+			} else {
+				if ($i eq 'U+') {
+					#nothing..
+				} else {
+					push(@stack, -1 * pop(@stack));
+				}
+			}
+		} else {
+			push(@stack, $i);
+		}
+	}
+	
+	#print(pop(@stack));
+	return pop(@stack);
 }
+#evaluate(rpn("0e0"));
 
+#evaluate(rpn("0e0"));
 1;

@@ -21,7 +21,6 @@ use FindBin;
 require "$FindBin::Bin/../lib/tokenize.pl";
 sub isNum {
 	my $check = shift;
-	#print "debug: ".$check;
 	if ($check =~/\d+/) {
 		return 1;
 	} else {
@@ -30,10 +29,8 @@ sub isNum {
 }
 sub rpn {
 	my $expr = shift;
-	#print(Dumper($expr));
 	my $source = tokenize($expr);
 	my @res = @{$source};
-	#print(Dumper(@res));
 	my @rpn = ();
 	my @stack = ();
 	my %lvl = (
@@ -60,7 +57,6 @@ sub rpn {
 	);
 	my $len = -1;
 	foreach my $i(@res) {
-		#print $i."\n";
 		if (isNum($i)) {
 			push(@rpn, $i);
 		} elsif ($len == -1) {
@@ -109,6 +105,5 @@ sub rpn {
 	#print(join(' ', @rpn));
 	return \@rpn;
 }
-#rpn("1 + 3 ^ 4");
 1;
 

@@ -22,16 +22,11 @@ use FindBin;
 require "$FindBin::Bin/../lib/rpn.pl";
 
 sub evaluate {
-	#print "\n";
 	my $rpn_ = shift;
 	my @rpn = @{$rpn_};
-	#print @rpn;
 	my @stack = ();
 	for my $i (@rpn) {
-		#print(Dumper(@stack));
-		#print "out: $i\n";
 		if ($i !~/^\d+/) {
-			#print "=".$i."=\n";
 			#есть символы не числа
 			if ($i ne 'U+' && $i ne 'U-') {
 				my $prev1 = pop(@stack);
@@ -56,7 +51,4 @@ sub evaluate {
 	#print(pop(@stack));
 	return pop(@stack);
 }
-#evaluate(rpn("0e0"));
-
-#evaluate(rpn("0e0"));
 1;

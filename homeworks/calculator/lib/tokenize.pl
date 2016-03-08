@@ -103,25 +103,20 @@ sub tokenize {
 		#скобки и число
 		die "Нет операций между выражениями ".$1." и ".$2."\n";
 	}
-	#print $expr."\n";
 	#удалим все пробелы
 	$expr =~s/\s//g;
 	if ($expr =~/([^0-9\+\-\(\)\^\*\/\.e])/) {
 		die "Недопустимые символы: ".$1
 	}
-	#print $expr."\n";
 	#заменим все Xe+|-Y на [X * 10 ** +|-Y], [, ] у нас нет в записи
 	#если что-то не заменилось, значит оно не подходит по синтаксису
 	$expr =~s/(\d*\.?\d+)e([\+|-]?\d*\.?\d+)/[$1*10**$2]/g;
 	if ($expr =~/([^0-9\+\-\(\)\^\*\/\.\[\]])/) {
 		die "Неправильный синтаксис с e: ".$1." : ";
 	}
-	#print $expr."\n";
 	@res_ = split //, $expr;
 	for (my $i = 0; $i < scalar(@res_); $i++) {
-		#print $i;
 		if ($res_[$i] eq "[") {
-			#print "in\n";
 			my @ev = ();
 			$i++;
 			while ($res_[$i] ne "]") {
@@ -129,7 +124,6 @@ sub tokenize {
 				$i++;
 			}
 			my $streval = join('', @ev);
-			#print "streval: $streval \n";
 			my $temp = eval($streval);
 			push(@res, $temp);
 		} else {
@@ -138,15 +132,11 @@ sub tokenize {
 	}
 	@res_ = @res;
 	@res = ();
-	
-	#@res_ = split //, $expr; #по символьно
 	#соеденим все цифры
 	push (@res, $res_[0]);
 	my $flag = 0; #была ли число с точкой последним
 	my $flage = 0;
 	for (my $i = 1; $i < scalar(@res_); $i++) {
-		#print(Dumper(@res));
-		#print "\n";
 		if (isDigit($res_[$i])) {
 			my @ans = ();
 			if ($flag) {
@@ -207,11 +197,9 @@ sub tokenize {
 			}
 		}
 	}
-	#print(Dumper(@res[1..scalar(@res) - 2]));
 	@res = @res[1..scalar(@res) - 2];
 	#print(Dumper(@res));
 	return \@res;
 }
 
-#tokenize("1 + 2");
 1;

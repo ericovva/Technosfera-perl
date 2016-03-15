@@ -1,11 +1,10 @@
-package Local::GetterSetter;
-
+package GetterSetter;
+use strict;
+no strict 'refs';
 sub import {
-	$namePack = (caller(0))[0];
-	@vars = @_[1..@_];
+	my ($namePack) = caller();
+	my ($class, @vars) = @_;
 	foreach my $i (@vars) {
-		my $val = 0;
-		*{"$namePack"."::"."$i"} = \$val;
 		*{"$namePack"."::"."set_"."$i"} = 
 		sub { 
 			my $newVal = shift();

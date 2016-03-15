@@ -8,7 +8,6 @@ use strict;
 use warnings;
 use Data::Dumper;
 use lib '/home/gmoryes/Technosfera-perl/homeworks/music_library/lib/';
-use Local::Parse '$COLUMNS';
 use Exporter 'import';
 our @EXPORT = qw(print_table);
 sub max {
@@ -22,6 +21,7 @@ sub max {
 }
 sub print_table {
 	#list
+	my $COLUMNS = shift();
 	if (!$COLUMNS) {
 		$COLUMNS = "band,year,album,track,format";
 	}
@@ -38,11 +38,9 @@ sub print_table {
 		"format" => 0,
 	);
 	foreach my $i (keys %list) {
-		$len{"band"} = max($len{"band"}, length $list{$i}{"band"});
-		$len{"year"} = max($len{"year"}, length $list{$i}{"year"});
-		$len{"album"} = max($len{"album"}, length $list{$i}{"album"});
-		$len{"track"} = max($len{"track"}, length $list{$i}{"track"});
-		$len{"format"} = max($len{"format"}, length $list{$i}{"format"});
+		foreach my $j (keys %len) {
+			$len{$j} = max($len{$j}, length $list{$i}{$j});
+		}
 	}
 	my $strLen = 0;
 	foreach my $i (@colNames) {

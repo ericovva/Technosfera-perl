@@ -6,19 +6,18 @@ use Data::Dumper;
 use Getopt::Long;
 use lib '/home/gmoryes/Technosfera-perl/homeworks/music_library/lib/';
  
-use Local::Parse qw(parse $SORT);
+use Local::Parse qw(parse get_SORT get_COLUMNS);
 use Local::Sort qw(sort_hash);
 use Local::PrintTable qw(print_table);
 
 my %list = %{parse()};
-my @order = ();
-for (my $i = 0; $i < scalar(keys %list); $i++) {
-	push(@order, $i);
-}
+my $SORT = get_SORT();
+my $COLUMNS = get_COLUMNS();
+my @order = (0..scalar(keys %list) - 1);
 if ($SORT) {
-	@order = @{sort_hash(\%list, \@order)};
+	@order = @{sort_hash(\%list, \@order, $SORT)};
 }
-print_table(\%list, \@order);
+print_table($COLUMNS, \%list, \@order);
 
 
 

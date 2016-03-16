@@ -41,7 +41,7 @@ sub parse {
 	}
 	while ($newstr = <>) {
 		chomp($newstr);
-		my ($band, $year, $album, $track, $format) = ($newstr =~/\.\/(.+)\/(\d+)\s\-\s(.+)\/(.+)\.+(.+)/);
+		my ($band, $year, $album, $track, $format) = ($newstr =~/^\.\/(.+)\/(\d+)\s\-\s(.+)\/(.+)\.+(.+)$/);
 		#$1 = группа
 		#$2 = год
 		#$3 = альбом

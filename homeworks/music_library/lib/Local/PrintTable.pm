@@ -21,11 +21,11 @@ sub max {
 }
 sub print_table {
 	#list
-	my $COLUMNS = shift();
-	if (!$COLUMNS) {
-		$COLUMNS = "band,year,album,track,format";
+	my $columnsFromKey = shift();
+	if (!$columnsFromKey) {
+		$columnsFromKey = "band,year,album,track,format";
 	}
-	my @colNames = split(/,/, $COLUMNS);
+	my @colNames = split(/,/, $columnsFromKey);
 	my %list = %{shift()};
 	if (scalar(keys %list) == 0) {
 		return 0;

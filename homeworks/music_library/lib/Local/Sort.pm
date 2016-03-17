@@ -10,15 +10,15 @@ use Data::Dumper;
 use Exporter 'import';
 our @EXPORT = ('sort_hash');
 use lib '/home/gmoryes/Technosfera-perl/homeworks/music_library/lib/';
-use Local::Parse '$SORT';
-
+use Local::Parse 'get_SORT';
 sub sort_hash {
 	my %list = %{shift()};
 	my @order = @{shift()};
-	if ($SORT eq "year") {
-		@order = sort{(0 + $list{$a}{"$SORT"}) <=> (0 + $list{$b}{"$SORT"})} @order;
+	my $sortFromKey = shift();
+	if ($sortFromKey eq "year") {
+		@order = sort{(0 + $list{$a}{"$sortFromKey"}) <=> (0 + $list{$b}{"$sortFromKey"})} @order;
 	} else {
-		@order = sort{$list{$a}{"$SORT"} cmp $list{$b}{"$SORT"}} @order;
+		@order = sort{$list{$a}{"$sortFromKey"} cmp $list{$b}{"$sortFromKey"}} @order;
 	}
 	return \@order;
 }

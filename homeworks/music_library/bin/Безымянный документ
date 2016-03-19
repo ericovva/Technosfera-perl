@@ -1,0 +1,30 @@
+GetOptions("band=s" => \$BAND, "year=s" => \$YEAR, "album=s" => \$ALBUM, "track=s" => \$TRACK, "format=s" => \$FORMAT);
+while ($newstr = <>) {
+	chomp($newstr);
+	$newstr =~/\.\/(.+)\/(\d+)\s\-\s(.+)\/(.+)\.(.+)/;
+	#$1 = группа
+	#$2 = год
+	#$3 = альбом
+	#$4 = трек
+	#$5 = формат
+	#print $1."\n".$2."\n".$3."\n".$4."\n".$5."\n";
+	my %newhash = (
+		"group" => $1,
+		"year" => $2,
+		"album" => $3,
+		"name" => $4,
+		"format" => $5,
+	);
+	my $BAND_ = (!$BAND) ? $1 : $BAND;
+	my $YEAR_ = (!$YEAR) ? $2 : $YEAR;
+	my $ALBUM_ = (!$ALBUM) ? $3 : $ALBUM;
+	my $TRACK_ = (!$TRACK) ? $4 : $TRACK;
+	my $FORMAT_ = (!$FORMAT) ? $5 : $FORMAT;
+	if ($newhash{"group"} eq $BAND_ and $newhash{"year"} eq $YEAR_ 
+		and $newhash{"album"} eq $ALBUM_ and $newhash{"name"} eq $TRACK_
+		and $newhash{"format"} eq $FORMAT_) {
+		$list{$cnt} = \%newhash;
+		$cnt++;
+	}
+}
+#print scalar(keys %list);

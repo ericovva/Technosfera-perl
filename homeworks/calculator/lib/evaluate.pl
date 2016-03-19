@@ -31,8 +31,16 @@ sub evaluate {
 			if ($i ne 'U+' && $i ne 'U-') {
 				my $prev1 = pop(@stack);
 				my $prev2 = pop(@stack);
-				if ($i eq '-' || $i eq '+' || $i eq '*' || $i eq '/') {
-					push(@stack, eval(" $prev2 ".$i." $prev1 "));
+				#if ($i eq '-' || $i eq '+' || $i eq '*' || $i eq '/') {
+				#	push(@stack, eval(" $prev2 ".$i." $prev1 "));
+				if ($i eq '-') {
+					push(@stack, $prev2 - $prev1);
+				} elsif ($i eq '+') {
+					push(@stack, $prev2 + $prev1);
+				} elsif ($i eq '*') {
+					push(@stack, $prev2 * $prev1);
+				} elsif ($i eq '/') {
+					push(@stack, $prev2 / $prev1);
 				} else {
 					push(@stack, $prev2 ** $prev1);
 				}

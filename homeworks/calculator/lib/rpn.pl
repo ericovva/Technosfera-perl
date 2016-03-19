@@ -59,7 +59,7 @@ sub rpn {
 	foreach my $i(@res) {
 		if (isNum($i)) {
 			push(@rpn, $i);
-		} elsif ($len == -1) {
+		} elsif (@stack == -1) {
 			push(@stack, $i);
 			$len++;
 		} elsif ($i eq "(") {

@@ -11,13 +11,13 @@ use Local::Sort qw(sort_hash);
 use Local::PrintTable qw(print_table);
 
 my %list = %{parse()};
-my $SORT = get_SORT();
-my $COLUMNS = get_COLUMNS();
+my $sortFromKey = get_SORT();
+my $columnsFromKey = get_COLUMNS();
 my @order = (0..scalar(keys %list) - 1);
-if ($SORT) {
-	@order = @{sort_hash(\%list, \@order, $SORT)};
+if ($sortFromKey) {
+	@order = @{sort_hash(\%list, \@order, $sortFromKey)};
 }
-print_table($COLUMNS, \%list, \@order);
+print_table($columnsFromKey, \%list, \@order);
 
 
 

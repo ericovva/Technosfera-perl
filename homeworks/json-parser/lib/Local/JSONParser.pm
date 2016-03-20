@@ -1,9 +1,7 @@
 package Local::JSONParser;
 
-use utf8;
 use JSON::XS;
 use strict;
-use Text::Unidecode;
 use Unicode::Escape 'unescape';
 use warnings;
 use base qw(Exporter);
@@ -14,14 +12,16 @@ use DDP;
 sub encodeToText {
 	#преобразуем все спец символы в действительно специальные
 	my $string = shift();
+	print $string."\n";
 	$string =~ s/\\b/\b/g;
 	$string =~ s/\\f/\f/g;
 	$string =~ s/\\n/\n/g;
 	$string =~ s/\\r/\r/g;
 	$string =~ s/\\t/\t/g;
-	$string =~ s/\\//g;
 	$string =~ s/\\\//\//g;
 	$string =~ s/\\"/"/g;
+	#$string =~ s/\\//g;
+	
 	return unescape($string);
 }
 
@@ -102,13 +102,15 @@ sub parse_json {
 				)
 			)\s*,
 			}xgm) {
+			print "$1 : $2 \n";
 			my ($path, $string, $number, $object, $array) = ($1, $3, $4, $5, $6);
 			$path =~ s/"//g;
+			print "string: $string \n";
 			if ($string) {
 				$string =~ s/^"//;
 				$string =~ s/"$//;
 				$string = encodeToText($string);
-				$result{$path} = unescape($string);
+				$result{$path} = $string;
 			} elsif ($number) {
 				$result{$path} = $number;
 			} elsif ($object) {
@@ -124,6 +126,7 @@ sub parse_json {
 	#return JSON::XS->new->utf8->decode($source);
 	return {};
 }
-#p(parse_json('"{\n}"'));
-#p(parse_json(qq/ { "key1":\n"string value",\n"key2":\n-3.1415,\n"key3"\n: ["nested array"],\n"key4"\n:\n{"nested":"object"}}/));
+#p(parse_json('[1,2,"\u0451"]'));
+#p(parse_json('{ "key1":"string \u0451 \n value","key2":-3.1415,"key3": ["nested array"],"key4":{"nested":"object"}}'));
+#p(parse_json('{"key1":"value"}'));
 1;

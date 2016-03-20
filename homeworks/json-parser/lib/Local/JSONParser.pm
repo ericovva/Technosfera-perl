@@ -12,7 +12,6 @@ use DDP;
 sub encodeToText {
 	#преобразуем все спец символы в действительно специальные
 	my $string = shift();
-	print $string."\n";
 	$string =~ s/\\b/\b/g;
 	$string =~ s/\\f/\f/g;
 	$string =~ s/\\n/\n/g;
@@ -102,9 +101,10 @@ sub parse_json {
 				)
 			)\s*,
 			}xgm) {
-			print "$1 : $2 \n";
 			my ($path, $string, $number, $object, $array) = ($1, $3, $4, $5, $6);
-			$path =~ s/"//g;
+			$path =~ s/^"//;
+			$path =~ s/"$//;
+			$path = encodeToText($path);
 			print "string: $string \n";
 			if ($string) {
 				$string =~ s/^"//;

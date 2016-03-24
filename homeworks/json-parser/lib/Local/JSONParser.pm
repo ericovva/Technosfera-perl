@@ -49,6 +49,9 @@ my $idBracket = 0;
 sub parse_json {
 	my $source = shift;
 	$source =~ s/\n//gm;
+	#Добавим id каждой скобки (чтобы в регулярном выражении правильно искать парные скобки)
+	#[1,[1],3,{"key":0}] ==> 1[1,2[1]2,3,3{"key":0}3]1
+	#Тогда чтобы найти парную скобку для 1[ будем искать ]1
 	if (!$idBracket) {
 		$source = numBracket($source);
 		$idBracket = 1;
@@ -65,6 +68,7 @@ sub parse_json {
 		$source =~ s/(\d+\[)//;
 		$source =~ s/(.*)(\]\d+)/$1/;
 		if (!$2) {
+			#Если нет закрывающей - ошибка, неправильный баланс
 			die "Bad balance";
 		}
 		my @result;
@@ -110,6 +114,7 @@ sub parse_json {
 		}
 		$source =~ s/\s*//g;
 		if (length($source) != 0) {
+			#Если в результате осталось что-то кроме пробелов - ошибка (было что-то не по синтаксису)
 			die "Wrong syntax in array";
 		}
 		return \@result;
@@ -121,6 +126,7 @@ sub parse_json {
 		$source =~ s/(\d+\{)//;
 		$source =~ s/(.*)(\}\d+)/$1/;
 		if (!$2) {
+			#Аналогично с обработкой массива
 			die "Bad balance";
 		}
 		my %result;
@@ -170,11 +176,14 @@ sub parse_json {
 		}
 		$source =~ s/\s*//g;
 		if (length($source) != 0) {
+			#Аналогично с обработкой массива
 			die "Wrong syntax in object";
 		}
 		return \%result;
 	} else {
-		die "Wrong syntax";
+		#Если изначально не было открывающей скобки, а на вход всегда должен подаваться либо [], либо {}
+		#Выдаем ошибку
+		die "Wrong input";
 	}
 	
 	

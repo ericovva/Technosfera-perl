@@ -47,7 +47,6 @@ sub numBracket {
 }
 my $idBracket = 0;
 sub parse_json {
-	#print "new run \n";
 	my $source = shift;
 	$source =~ s/\n//gm;
 	if (!$idBracket) {
@@ -65,7 +64,6 @@ sub parse_json {
 		
 		$source =~ s/(\d+\[)//;
 		$source =~ s/(.*)(\]\d+)/$1/;
-		#print "source: $source \n";
 		if (!$2) {
 			die "Bad balance";
 		}
@@ -76,8 +74,7 @@ sub parse_json {
 			return \@result;
 		}
 		$source .= ",";
-		
-		#print "1: $source \n";
+
 		while ($source =~ s{
 			(
 				#Шаблон для объекта
@@ -94,7 +91,6 @@ sub parse_json {
 			)
 			}{}xm) {
 			my ($string, $number, $object, $array) = ($+{string}, $+{number}, $+{object}, $+{array});
-			#print $string."\n";
 			#ищем отдельные элементы массива, если они "элементарные", то сразу добавляем
 			#иначе запускаемся рекурсивно дальше
 			if ($string) {
@@ -105,10 +101,8 @@ sub parse_json {
 				$string = encodeToText($string);
 				push(@result, $string);
 			} elsif ($object) {
-				#$object = "0{".$object."}0";
 				push(@result, parse_json($object));
 			} elsif ($array) {
-				#$array = "0[".$array."]0";
 				push(@result, parse_json($array));
 			} elsif ($number or $number == 0) {
 				push(@result, $number);
@@ -136,7 +130,6 @@ sub parse_json {
 			return \%result;
 		}
 		$source .= ",";
-		#print "1: $source \n";
 		while ($source =~ s{
 			#Шаблон для string (key)
 			(?<path>"(?:[^"\\]|\\(?:["\\\/bfnrt]|(?:u\d{4})))+")
@@ -158,7 +151,6 @@ sub parse_json {
 			)\s*,
 			}{}xm) {
 				
-			#print "source: $source found: $1 : $2 \n";
 			my ($path, $string, $number, $object, $array) = ($+{path}, $+{string}, $+{number}, $+{object}, $+{array});
 			$path =~ s/^"//;
 			$path =~ s/"$//;

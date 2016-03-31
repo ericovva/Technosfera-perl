@@ -6,7 +6,7 @@ use IO::Socket "getnameinfo";
 
 
 my $file_path = './calcs.txt';
-
+my $timer = 5;
 sub new_one {
     # Функция вызывается по таймеру каждые 100
     my $calcTxt;
@@ -17,7 +17,7 @@ sub new_one {
                   int(rand(5)).' + '.int(rand(6)).' * '.int(rand(8)).' ^ '.int(rand(12)), 
                   int(rand(20)).' + '.int(rand(40)).' * '.int(rand(45)).' ^ '.int(rand(12)), 
                   #0.4 * (4 - 9) / 8.31432926516342.0 ^ 0.3
-                  (int(rand(12))/(int(rand(17))+1)).' * ('.(int(rand(14))/(int(rand(30))+1)).' - '.int(rand(10)).') / '.int(rand(10)).'.0 ^ 0.'.int(rand(6)),  
+                  (int(rand(12))/(int(rand(17))+1)).' * ('.(int(rand(14))/(int(rand(30))+1)).' - '.int(rand(10)).') / '.(int(rand(10)) + 1).'.0 ^ 0.'.int(rand(6)),  
                   int(rand(8)).' + 0.'.int(rand(10)), 
                   int(rand(10)).' + .5',
                   int(rand(10)).' + .5e0',
@@ -38,7 +38,7 @@ my $goIn = 0;
 $SIG{ALRM} = sub {
 	new_one();
 	$goIn = 1;
-	alarm(20);
+	alarm($timer);
 };
 my $lastPos = 0;
 sub start_server {
@@ -50,7 +50,7 @@ sub start_server {
 	ReuseAddr => 1,
 	Listen => 10) or die "Can't create server on port $port : $@ $/";
 	
-	alarm(20);
+	alarm($timer);
 	while(my $client = $server->accept() or $goIn) {
 		if ($goIn) {
 			$goIn = 0;
@@ -60,16 +60,14 @@ sub start_server {
 		$client->autoflush(1);
 		my $N = <$client>;
 		chomp($N);
-		$N = unpack("s", $N);
-		#$N = unpack("s*", $N);
-		#$N = int($N);
+		#$N = unpack("s", $N);
 		my $other = getpeername($client);
 		my ($arr, $host, $service) = getnameinfo($other);
 		print "New connection from: $host:$service $/";
 		print $client "N: $N \n";
 		print $client join("\n", @{get($N)});
-		
-		alarm(20);
+		close($client);
+		alarm($timer);
 	}
 	close($server);
 }

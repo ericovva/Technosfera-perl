@@ -21,42 +21,62 @@ sub min {
 	return $a if $a < $b;
 	return $b if $b <= $a;
 }
-my $arr = get_from_server(8082, 10);
-#p($arr);
-#multi_calc(1, ["1 + 2", "4 + 5"], 8081);
+my $arr = get_from_server(8082, 100);
+multi_calc(10, $arr, 8081);
+#multi_calc(1, ["0.666666666666667 * (0.5 - 9) / 3.0 ^ 0.5\n"], 8081);
+#multi_calc(2, ["3 - 234 * 1 / 7"], 8081);
 sub multi_calc {
     # На вход получаем 3 параметра
     my $fork_cnt = shift;  # кол-во паралельных потоков в котором мы будем обрабатывать задания
     my $jobs = shift;      # пул заданий
     my $calc_port = shift; # порт на котором доступен сетевой калькулятор
 	my @equals = @{$jobs};
-	my @equals_copy = @equals;
+	#p(@equals);
+	my @equals_copy = ();
 	my $needs = int((scalar(@equals) + $fork_cnt - 1) / $fork_cnt);
 	my $pid;
 	my $child_id = 0;
 	for (my $i = 0; $i < $fork_cnt; $i++) {
-		@equals = @equals[$i * $needs..min(($i + 1) * $needs - 1, scalar(@equals) - 1)];
+		for (my $j = $i * $needs; $j <= min(($i + 1) * $needs - 1, scalar(@equals) - 1); $j++) {
+			$equals_copy[$j - $i * $needs] = $equals[$j];
+		}
+		print "\n";
+		print @equals_copy;
+		print "\n";
+		$child_id++;
 		$pid = fork();
-		if (!$pid) {
-			$child_id++;
+		if ($pid) {
+			next;
+		}
+		if (defined $pid) {
 			last;
 		}
-		@equals = @equals_copy;
+		@equals_copy = ();
 	}
-	
-	if (!$pid) {
-		#print @equals;
-		#print "\n";
+	if ($pid) {
+		exit;
+	}
+	if (defined $pid) {
 		my $socket = IO::Socket::INET->new(
 		PeerAddr => 'localhost',
 		PeerPort => $calc_port,
 		Proto => "tcp",
 		Type => SOCK_STREAM) or die "не могу подключиться к localhost";
-		print $socket pack("L", scalar(@equals))."\n";
-		for (my $i = 0; $i < scalar(@equals); $i++) {
-			print $socket pack("L/a*", $equals[$i])."\n";
+		#print $socket pack("L", scalar(@equals_copy))."\n";
+		print "посылаем размер: ".scalar(@equals_copy)."\n";
+		print $socket pack("l", scalar(@equals_copy))."\n";
+		my $size = <$socket>;
+		chomp($size);
+		print "на сервер пришло: $size \n";
+		for (my $i = 0; $i < scalar(@equals_copy); $i++) {
+			chomp($equals_copy[$i]);
+			
+			print $socket pack("L/a*", $equals_copy[$i])."\n";
 			my $ans = <$socket>;
-			$ans = unpack("d", $ans);
+			chomp($ans);
+			#$ans = unpack("d", $ans);
+			print "\n";
+			print $equals_copy[$i]."\n";
 			print $ans."\n";
 		}
 	}
@@ -84,7 +104,8 @@ sub get_from_server {
 	Proto => "tcp",
 	Type => SOCK_STREAM)
 	or die "Can`t connect to localhost $/";
-	my $send = pack("s", $limit);
+	#my $send = pack("s", $limit);
+	my $send = $limit;
 	print $socket $send."\n";
 	my $ans = <$socket>;
 	print $ans;

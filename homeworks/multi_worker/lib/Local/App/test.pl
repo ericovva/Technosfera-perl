@@ -1,9 +1,11 @@
 use strict;
 use warnings;
 use DDP;
-sub func {
-	my $limit = shift;
-	my $send = (pack("s", $limit));
-	print $send;
-};
-func(114);
+use lib '/home/gmoryes/Technosfera-perl/homeworks/multi_worker/lib';
+use Local::App::evaluate;
+use Local::App::rpn;
+my $var = "-3.27165152540788";
+my $ex = " 0.666666666666667 * (0.5 - 9) / 3.0 ^ 0.5";
+$ex = evaluate(rpn($ex));
+my $temp = pack "d", $ex;
+print unpack("d", $temp);

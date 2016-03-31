@@ -29,16 +29,17 @@ sub start_server {
 			$client->autoflush(1);
 			my $size = <$client>;
 			chomp($size);
-			$size = unpack("L", $size);
-			print "size: $size \n";
+			$size = unpack("l", $size);
+			print "SIZE: $size \n";
+			print $client "$size\n";
 			for (my $i = 0; $i < $size; $i++) {
 				my $message = <$client>;
 				chomp($message);
 				$message = unpack("L/a*", $message);
 				print "mes: $message \n";
 				my $res = calculate($message);
-				print "res: $res \n";
-				print $client pack("d", $res)."\n";
+				print "res: $res or ".pack("d", $res)."\n";
+				print $client $res."\n";
 			}
 			close($client);
 			exit;

@@ -199,32 +199,32 @@ TO_INST_PM = lib/Local/App/Calc.pm \
 	lib/Local/App/test.pl \
 	lib/Local/App/tokenize.pm
 
-PM_TO_BLIB = lib/Local/App/abc.txt \
-	blib/lib/Local/App/abc.txt \
+PM_TO_BLIB = lib/Local/App/GenCalc.pm \
+	blib/lib/Local/App/GenCalc.pm \
 	lib/Local/App/tokenize.pm \
 	blib/lib/Local/App/tokenize.pm \
-	lib/Local/App/rpn.pm \
-	blib/lib/Local/App/rpn.pm \
-	lib/Local/App/del.pl \
-	blib/lib/Local/App/del.pl \
-	lib/Local/App/result.txt \
-	blib/lib/Local/App/result.txt \
-	lib/Local/App/GenCalc.pm \
-	blib/lib/Local/App/GenCalc.pm \
-	lib/Local/App/test.pl \
-	blib/lib/Local/App/test.pl \
+	lib/Local/App/Calc.pm \
+	blib/lib/Local/App/Calc.pm \
 	lib/Local/App/newfile.txt \
 	blib/lib/Local/App/newfile.txt \
-	lib/Local/App/ProcessCalc.pm \
-	blib/lib/Local/App/ProcessCalc.pm \
 	lib/Local/App/evaluate.pm \
 	blib/lib/Local/App/evaluate.pm \
-	lib/Local/App/calc_status.txt \
-	blib/lib/Local/App/calc_status.txt \
+	lib/Local/App/del.pl \
+	blib/lib/Local/App/del.pl \
 	lib/Local/App/calcs.txt \
 	blib/lib/Local/App/calcs.txt \
-	lib/Local/App/Calc.pm \
-	blib/lib/Local/App/Calc.pm
+	lib/Local/App/result.txt \
+	blib/lib/Local/App/result.txt \
+	lib/Local/App/ProcessCalc.pm \
+	blib/lib/Local/App/ProcessCalc.pm \
+	lib/Local/App/calc_status.txt \
+	blib/lib/Local/App/calc_status.txt \
+	lib/Local/App/test.pl \
+	blib/lib/Local/App/test.pl \
+	lib/Local/App/abc.txt \
+	blib/lib/Local/App/abc.txt \
+	lib/Local/App/rpn.pm \
+	blib/lib/Local/App/rpn.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -447,12 +447,12 @@ POD2MAN = $(POD2MAN_EXE)
 
 
 manifypods : pure_all  \
-	lib/Local/App/rpn.pm \
 	lib/Local/App/tokenize.pm \
+	lib/Local/App/rpn.pm \
 	lib/Local/App/evaluate.pm
 	$(NOECHO) $(POD2MAN) --section=$(MAN3EXT) --perm_rw=$(PERM_RW) \
-	  lib/Local/App/rpn.pm $(INST_MAN3DIR)/Local::App::rpn.$(MAN3EXT) \
 	  lib/Local/App/tokenize.pm $(INST_MAN3DIR)/Local::App::tokenize.$(MAN3EXT) \
+	  lib/Local/App/rpn.pm $(INST_MAN3DIR)/Local::App::rpn.$(MAN3EXT) \
 	  lib/Local/App/evaluate.pm $(INST_MAN3DIR)/Local::App::evaluate.$(MAN3EXT) 
 
 
@@ -480,22 +480,22 @@ clean_subdirs :
 
 clean :: clean_subdirs
 	- $(RM_F) \
-	  pm_to_blib *perl.core \
-	  $(BASEEXT).def perl.exe \
-	  core $(INST_ARCHAUTODIR)/extralibs.ld \
-	  perl tmon.out \
-	  perl$(EXE_EXT) core.[0-9][0-9][0-9] \
+	  MYMETA.json *$(LIB_EXT) \
+	  mon.out core.[0-9][0-9][0-9][0-9] \
+	  perl$(EXE_EXT) *perl.core \
+	  blibdirs.ts core.[0-9][0-9][0-9][0-9][0-9] \
+	  $(BASEEXT).bso $(INST_ARCHAUTODIR)/extralibs.ld \
+	  pm_to_blib.ts core \
+	  *$(OBJ_EXT) $(BASEEXT).def \
+	  so_locations lib$(BASEEXT).def \
+	  core.[0-9] tmon.out \
+	  core.[0-9][0-9] MYMETA.yml \
 	  $(MAKE_APERL_FILE) $(BOOTSTRAP) \
-	  core.[0-9][0-9][0-9][0-9][0-9] *$(OBJ_EXT) \
-	  $(BASEEXT).bso MYMETA.yml \
-	  $(INST_ARCHAUTODIR)/extralibs.all core.[0-9] \
-	  $(BASEEXT).exp $(BASEEXT).x \
-	  lib$(BASEEXT).def MYMETA.json \
-	  *$(LIB_EXT) core.[0-9][0-9] \
-	  perlmain.c core.[0-9][0-9][0-9][0-9] \
-	  core.*perl.*.? so_locations \
-	  blibdirs.ts pm_to_blib.ts \
-	  mon.out 
+	  $(INST_ARCHAUTODIR)/extralibs.all perl \
+	  perlmain.c core.*perl.*.? \
+	  core.[0-9][0-9][0-9] $(BASEEXT).x \
+	  perl.exe $(BASEEXT).exp \
+	  pm_to_blib 
 	- $(RM_RF) \
 	  blib 
 	- $(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD) $(DEV_NULL)
@@ -865,19 +865,19 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  lib/Local/App/abc.txt blib/lib/Local/App/abc.txt \
-	  lib/Local/App/tokenize.pm blib/lib/Local/App/tokenize.pm \
-	  lib/Local/App/rpn.pm blib/lib/Local/App/rpn.pm \
-	  lib/Local/App/del.pl blib/lib/Local/App/del.pl \
-	  lib/Local/App/result.txt blib/lib/Local/App/result.txt \
 	  lib/Local/App/GenCalc.pm blib/lib/Local/App/GenCalc.pm \
-	  lib/Local/App/test.pl blib/lib/Local/App/test.pl \
+	  lib/Local/App/tokenize.pm blib/lib/Local/App/tokenize.pm \
+	  lib/Local/App/Calc.pm blib/lib/Local/App/Calc.pm \
 	  lib/Local/App/newfile.txt blib/lib/Local/App/newfile.txt \
-	  lib/Local/App/ProcessCalc.pm blib/lib/Local/App/ProcessCalc.pm \
 	  lib/Local/App/evaluate.pm blib/lib/Local/App/evaluate.pm \
-	  lib/Local/App/calc_status.txt blib/lib/Local/App/calc_status.txt \
+	  lib/Local/App/del.pl blib/lib/Local/App/del.pl \
 	  lib/Local/App/calcs.txt blib/lib/Local/App/calcs.txt \
-	  lib/Local/App/Calc.pm blib/lib/Local/App/Calc.pm 
+	  lib/Local/App/result.txt blib/lib/Local/App/result.txt \
+	  lib/Local/App/ProcessCalc.pm blib/lib/Local/App/ProcessCalc.pm \
+	  lib/Local/App/calc_status.txt blib/lib/Local/App/calc_status.txt \
+	  lib/Local/App/test.pl blib/lib/Local/App/test.pl \
+	  lib/Local/App/abc.txt blib/lib/Local/App/abc.txt \
+	  lib/Local/App/rpn.pm blib/lib/Local/App/rpn.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

@@ -6,6 +6,9 @@ use lib '/home/gmoryes/Technosfera-perl/homeworks/multi_worker/lib';
 use Local::App::evaluate;
 use Local::App::rpn;
 
+#Определение обрабатываемых сигналов
+#$SIG{...} = \&...;
+
 sub start_server {
     # На вход получаем порт который будет слушать сервер занимающийся расчетами примеров
     my $port = shift;
@@ -26,6 +29,7 @@ sub start_server {
 			$client->autoflush(1);
 			my $size = <$client>;
 			chomp($size);
+			#$size = unpack("l", $size);
 			print "SIZE: $size \n";
 			print $client "$size\n";
 			for (my $i = 0; $i < $size; $i++) {
@@ -43,6 +47,9 @@ sub start_server {
 			die "can't fork sorry ;( \n";
 		}
 	}
+    # Создание сервера и обработка входящих соединений, форки не нужны 
+    # Входящее и исходящее сообщение: int 4 byte + string
+    # На каждое подключение отдельный процесс. В рамках одного соединения может быть передано несколько примеров
 }
 #start_server(8081);
 

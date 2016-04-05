@@ -29,8 +29,10 @@ sub multi_calc {
     my $calc_port = shift; # порт на котором доступен сетевой калькулятор
 	my @equals = @{$jobs};
 	my @equals_copy = ();
+	#сколько нам нужно примеров на каждый обработчик, считаем так, что бы разницы между двумя любыми была минимальной
 	my $needs = int((scalar(@equals) + $fork_cnt - 1) / $fork_cnt);
 	print "need: $needs \n";
+	#массив, в котором будут содержаться pid'ы детей
 	my @pid = ();
 	my $child_id = 0;
 	my $ret = [];
@@ -58,13 +60,16 @@ sub multi_calc {
 		}
 	}
 	if ($pid[$#pid]) {
+		#это процесс - родитель
 		my $cnt = 1;
 		my $mainRes;
 		open($mainRes, ">>", "result.txt");
 		print join(' ', @pid);
 		foreach my $i (@pid) {
 			waitpid($i, 0);
+			#ждем завершения i-ого ребенка
 			my $exit_status = $? >> 8;
+			#если статус завершения был не нулевой, то убиваем всех детей и очищаем за ними файлы
 			if ($exit_status != 0) {
 				kill @pid[$cnt - 1..scalar(@pid) - 1];
 				for (my $j = $cnt; $j <= scalar(@pid); $j++) {
@@ -74,6 +79,7 @@ sub multi_calc {
 				unlink "result.txt";
 				die "Обработчик $i завершил работу не коректно \n";
 			}
+			#если все хорошо, то удаляем файл, созданный ребенком и копируем его содержимое в основной файл
 			my $file;
 			my @answers;
 			open($file, '<', "result_$cnt.txt");
@@ -90,12 +96,14 @@ sub multi_calc {
 		}
 		close($mainRes);
 	} elsif (defined $pid[$#pid]) {
+		#это ребенок, он подклчючается к серверу, который умеет вычислять примеры
 		my $socket = IO::Socket::INET->new(
 		PeerAddr => 'localhost',
 		PeerPort => $calc_port,
 		Proto => "tcp",
 		Type => SOCK_STREAM) or die "не могу подключиться к localhost";
 		print $socket scalar(@equals_copy)."\n";
+		#говорим серверу, сколько сейчас к нему придет примеров
 		my $size = <$socket>;
 		chomp($size);
 		my $file;
@@ -103,12 +111,14 @@ sub multi_calc {
 		my $fileStatus;
 		my $filePosition;
 		print "my pid is $$ \n";
+		#это статус текущего pid
 		my %hash_status = (
 			"status" => 'READY',
 			"cnt" => 0
 		);
 		my %hash;
 		my $was;
+		#если файла не было - создаем, иначе считываем хеш, и обновляем текущий статус
 		if (-e $status_file) {
 			open($fileStatus, '+<', $status_file);
 			flock($fileStatus, 2);
@@ -124,16 +134,15 @@ sub multi_calc {
 		seek($fileStatus, 0, 0);
 		truncate($fileStatus, 0);
 		print $fileStatus JSON::XS->new->utf8->encode(\%hash);
-		
-		
 		close($fileStatus);
+		#отправляем наши примеры на сервер
 		for (my $i = 0; $i < scalar(@equals_copy); $i++) {
 			chomp($equals_copy[$i]);
 			print $socket pack("L/a*", $equals_copy[$i])."\n";
 			my $ans = <$socket>; 
 			chomp($ans);
 			print $file $ans."\n";
-			#status file
+			#обновляем статистику
 			my @saveFile;
 			$hash_status{"status"} = 'PROCESS';
 			$hash_status{"cnt"}++;
@@ -153,6 +162,7 @@ sub multi_calc {
 			#end of status file
 		}
 		my @saveFile;
+		#когда все примеры отослали, и на каждый записали ответ, пишем в стутус DONE
 		$hash_status{"status"} = 'DONE';
 		open($fileStatus, '+<', $status_file);
 		flock($fileStatus, 2);

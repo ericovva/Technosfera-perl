@@ -15,7 +15,6 @@ my $server = Test::TCP->new(
         Local::App::GenCalc::start_server($port);
     },
 );
-
 my $server_calc = Test::TCP->new(
     code => sub {
         my $port = shift;
@@ -37,7 +36,6 @@ $jobs = Local::App::ProcessCalc::get_from_server($server->port, 100);
 is(scalar(@$jobs), 100, "server get");
 my $ret = Local::App::ProcessCalc::multi_calc(10, $jobs, $server_calc->port);
 is(scalar(@$ret), scalar(@$jobs), "return values");
-
 my $struct = get_status();
 
 my $status;
@@ -46,7 +44,7 @@ my $cnt_worker = 0;
 my $min;
 my $max;
 for (keys %$struct) {
-    $status .= $_." ".$struct->{$_}->{status}.$/ if $struct->{$_}->{status} ne 'done'; 
+	$status .= $_." ".$struct->{$_}->{status}.$/ if $struct->{$_}->{status} ne 'DONE'; 
     $sum += $struct->{$_}->{cnt};
     $cnt_worker++;
     $min = $max = $struct->{$_}->{cnt} unless defined $min;
@@ -58,3 +56,4 @@ is($status, undef, "worker status");
 is($sum, scalar(@$jobs), "worker sum");
 is($cnt_worker, int((scalar(@$jobs)+9)/10), "worker cnt");
 is($max-$min, 0, "Diff jobs on worker");
+

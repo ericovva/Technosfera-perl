@@ -50,14 +50,6 @@ sub all {
 	return $ret;
 }
 
-sub goToBegin {
-	my ($self) = @_;
-	my $fh = $self->{"fh"};
-	seek($fh, 0, 0);
-	$self->{"fh"} = $fh;
-	$self->{"end"} = 0;
-}
-
 =encoding utf8
 
 =head1 NAME

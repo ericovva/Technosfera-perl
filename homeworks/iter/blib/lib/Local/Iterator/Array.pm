@@ -36,12 +36,6 @@ sub all {
 	return $ret;
 }
 
-sub goToBegin {
-	my ($self) = @_;
-	$self->{"end"} = 0;
-	$self->{"cur"} = 0;
-}
-
 =encoding utf8
 
 =head1 NAME

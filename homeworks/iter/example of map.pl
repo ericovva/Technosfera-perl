@@ -20,5 +20,14 @@ my $ret = $it->map(
 );
 
 p $ret;
+
+$ret = $it->map(
+	sub {
+		my ($var) = @_;
+		return 5 * $var;
+	}
+);
+
+p $ret;
 	
 

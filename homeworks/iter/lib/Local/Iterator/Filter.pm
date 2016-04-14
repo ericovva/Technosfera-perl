@@ -6,7 +6,7 @@ use base 'Local::Iterator';
 				
 sub next {
 	my ($self) = @_;
-	if ($self->{"end"}) {
+	if ($self->{"iterator"}{"end"}) {
 		return (undef, 1);
 	} else {
 		my ($next, $end) = $self->{"iterator"}->next();
@@ -15,8 +15,10 @@ sub next {
 			return (undef, 1);
 		} else {
 			if ($self->{"callback"}->($next)) {
+				$self->{"end"} = 0;
 				return ($next, 0);
 			} else {
+				$self->{"end"} = 0;
 				return (undef, undef);
 			}
 		}

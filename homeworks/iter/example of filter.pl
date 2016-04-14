@@ -21,10 +21,22 @@ my $it = Local::Iterator::Filter->new(
 
 my $ret = $it->all();
 p $ret;
-#
+
+$it->{"iterator"}->goToBegin();
+$it->{"callback"} = sub {
+	my $var = shift;
+	return 1 if $var % 2 == 1;
+	return 0;
+};
+$ret = $it->all();
+p $ret;
 #\ [
 #    [0] 1,
 #    [1] 3,
 #    [2] 4
 #]
-#
+#\ [
+#    [0] 1,
+#    [1] 3
+#]
+

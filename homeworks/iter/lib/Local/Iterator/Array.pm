@@ -4,6 +4,10 @@ use strict;
 use warnings;
 use DDP;
 
+BEGIN {
+	use base 'Local::Iterator';
+}
+
 sub new {
 	my ($class, %params) = @_;
 	$params{"cur"} = 0;
@@ -21,19 +25,6 @@ sub next {
 		$self->{"cur"}++;
 		return ($self->{"array"} -> [$self->{"cur"} - 1], 0);
 	}
-}
-
-sub all {
-	my ($self) = @_;
-	my $ret = [];
-	my $size = -1;
-	my ($next, $end) = Local::Iterator::Array::next($self);
-	while (!$self->{"end"}) {
-		$size++;
-		$ret->[$size] = $next;
-		($next, $end) = Local::Iterator::Array::next($self);
-	}
-	return $ret;
 }
 
 sub goToBegin {

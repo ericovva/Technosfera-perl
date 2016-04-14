@@ -6,6 +6,10 @@ no strict "refs";
 use warnings;
 use DDP;
 
+BEGIN {
+	use base 'Local::Iterator';
+}
+
 sub new {
 		my ($class, %params) = @_;
 		$params{"end"} = 0;
@@ -32,18 +36,6 @@ sub next {
 	}
 }
 
-sub all {
-	my ($self) = @_;
-	my $res = [];
-	my $size = -1;
-	my ($next, $end) = Local::Iterator::Aggregator::next($self);
-	while (!$self->{"end"}) {
-		$size++;
-		$res->[$size] = $next;
-		($next, $end) = Local::Iterator::Aggregator::next($self);
-	}
-	return $res;
-}
 
 =encoding utf8
 

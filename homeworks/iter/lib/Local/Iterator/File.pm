@@ -4,6 +4,10 @@ use strict;
 use warnings;
 use DDP;
 
+BEGIN {
+	use base 'Local::Iterator';
+}
+
 sub new {
 	my ($class, %param) = @_;
 	if (exists($param{"filename"})) {
@@ -12,6 +16,8 @@ sub new {
 		my $filename = $param{"filename"};
 		open($fh, "<", $filename);
 		$param{"fh"} = $fh;
+		$param{"end"} = 0;
+		$param{"_end"} = 0;
 		return bless \%param, $class;
 	} else {
 		#file handler
@@ -22,6 +28,9 @@ sub new {
 
 sub next {
 	my ($self) = @_;
+	if ($self->{"_end"}) {
+		$self->{"end"} = 1;
+	}
 	if ($self->{"end"}) {
 		return (undef, 1);
 	} else {
@@ -29,25 +38,10 @@ sub next {
 		my $line = <$fh>;
 		chomp($line);
 		if (eof) {
-			$self->{"end"} = 1;
+			$self->{"_end"} = 1;
 		}
 		return ($line, 0);
 	}
-}
-
-sub all {
-	my ($self) = @_;
-	my $ret = [];
-	my $size = -1;
-	my ($next, $end) = Local::Iterator::File::next($self);
-	while (!$self->{"end"}) {
-		$size++;
-		$ret->[$size] = $next;
-		($next, $end) = Local::Iterator::File::next($self);
-	}
-	$size++;
-	$ret->[$size] = $next;
-	return $ret;
 }
 
 sub goToBegin {

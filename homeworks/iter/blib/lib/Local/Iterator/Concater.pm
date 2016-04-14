@@ -4,6 +4,10 @@ use strict;
 use warnings;
 use DDP;
 
+BEGIN {
+	use base 'Local::Iterator';
+}
+
 sub new {
 	my ($class, %params) = @_;
 	$params{"lastIter"} = 0;
@@ -31,20 +35,6 @@ sub next {
 			return ($next, 0);
 		}
 	}
-}
-
-sub all {
-	my ($self) = @_;
-	my $ret = [];
-	my $size = -1;
-	
-	my ($next, $end) = Local::Iterator::Concater::next($self);
-	while (!$self->{"end"}) {
-		$size++;
-		$ret->[$size] = $next;
-		($next, $end) = Local::Iterator::Concater::next($self);
-	}
-	return $ret;
 }
 
 

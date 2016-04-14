@@ -37,8 +37,10 @@ Local::Iterator::Map
 
     my $iterator = Local::Iterator::Map->new(
 		iterator => $another_iterator,
-		callback => \$function,
-		);
+	);
+	$iterator->map(
+		sub { ... }
+	);
 
 =cut
 

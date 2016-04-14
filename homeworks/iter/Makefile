@@ -162,10 +162,13 @@ MAN1PODS =
 MAN3PODS = lib/Local/Interval.pm \
 	lib/Local/Iterator.pm \
 	lib/Local/Iterator/Aggregator.pm \
-	lib/Local/Iterator/Array.pm \
-	lib/Local/Iterator/Concater.pm \
-	lib/Local/Iterator/File.pm \
-	lib/Local/Iterator/Interval.pm
+	lib/Local/Iterator/Filter.pm \
+	lib/Local/Iterator/Interval.pm \
+	lib/Local/Iterator/Map.pm \
+	lib/Local/Iterator/RewindableIterator.pm \
+	lib/Local/Iterator/RewindableIterator/Array.pm \
+	lib/Local/Iterator/RewindableIterator/Concater.pm \
+	lib/Local/Iterator/RewindableIterator/File.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIB)$(DFSEP)Config.pm $(PERL_INC)$(DFSEP)config.h
@@ -187,28 +190,46 @@ PERL_ARCHIVE       =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = lib/Local/Interval.pm \
+TO_INST_PM = example of filter.pl \
+	example of map.pl \
+	lib/Local/Interval.pm \
 	lib/Local/Iterator.pm \
 	lib/Local/Iterator/Aggregator.pm \
-	lib/Local/Iterator/Array.pm \
-	lib/Local/Iterator/Concater.pm \
-	lib/Local/Iterator/File.pm \
-	lib/Local/Iterator/Interval.pm
+	lib/Local/Iterator/Filter.pm \
+	lib/Local/Iterator/Interval.pm \
+	lib/Local/Iterator/Map.pm \
+	lib/Local/Iterator/RewindableIterator.pm \
+	lib/Local/Iterator/RewindableIterator/Array.pm \
+	lib/Local/Iterator/RewindableIterator/Concater.pm \
+	lib/Local/Iterator/RewindableIterator/File.pm \
+	тест.pl
 
-PM_TO_BLIB = lib/Local/Iterator/File.pm \
-	blib/lib/Local/Iterator/File.pm \
-	lib/Local/Iterator.pm \
-	blib/lib/Local/Iterator.pm \
-	lib/Local/Interval.pm \
-	blib/lib/Local/Interval.pm \
+PM_TO_BLIB = тест.pl \
+	$(INST_LIB)/Local/тест.pl \
+	example of map.pl \
+	$(INST_LIB)/Local/example of map.pl \
+	lib/Local/Iterator/RewindableIterator.pm \
+	blib/lib/Local/Iterator/RewindableIterator.pm \
+	lib/Local/Iterator/RewindableIterator/File.pm \
+	blib/lib/Local/Iterator/RewindableIterator/File.pm \
+	lib/Local/Iterator/RewindableIterator/Array.pm \
+	blib/lib/Local/Iterator/RewindableIterator/Array.pm \
 	lib/Local/Iterator/Interval.pm \
 	blib/lib/Local/Iterator/Interval.pm \
-	lib/Local/Iterator/Array.pm \
-	blib/lib/Local/Iterator/Array.pm \
+	example of filter.pl \
+	$(INST_LIB)/Local/example of filter.pl \
 	lib/Local/Iterator/Aggregator.pm \
 	blib/lib/Local/Iterator/Aggregator.pm \
-	lib/Local/Iterator/Concater.pm \
-	blib/lib/Local/Iterator/Concater.pm
+	lib/Local/Iterator/RewindableIterator/Concater.pm \
+	blib/lib/Local/Iterator/RewindableIterator/Concater.pm \
+	lib/Local/Iterator.pm \
+	blib/lib/Local/Iterator.pm \
+	lib/Local/Iterator/Map.pm \
+	blib/lib/Local/Iterator/Map.pm \
+	lib/Local/Iterator/Filter.pm \
+	blib/lib/Local/Iterator/Filter.pm \
+	lib/Local/Interval.pm \
+	blib/lib/Local/Interval.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -431,21 +452,27 @@ POD2MAN = $(POD2MAN_EXE)
 
 
 manifypods : pure_all  \
-	lib/Local/Iterator.pm \
-	lib/Local/Iterator/File.pm \
-	lib/Local/Interval.pm \
-	lib/Local/Iterator/Array.pm \
 	lib/Local/Iterator/Interval.pm \
-	lib/Local/Iterator/Concater.pm \
-	lib/Local/Iterator/Aggregator.pm
+	lib/Local/Iterator/Aggregator.pm \
+	lib/Local/Iterator/RewindableIterator/Concater.pm \
+	lib/Local/Iterator/RewindableIterator/Array.pm \
+	lib/Local/Iterator/Filter.pm \
+	lib/Local/Iterator/Map.pm \
+	lib/Local/Interval.pm \
+	lib/Local/Iterator.pm \
+	lib/Local/Iterator/RewindableIterator.pm \
+	lib/Local/Iterator/RewindableIterator/File.pm
 	$(NOECHO) $(POD2MAN) --section=$(MAN3EXT) --perm_rw=$(PERM_RW) \
-	  lib/Local/Iterator.pm $(INST_MAN3DIR)/Local::Iterator.$(MAN3EXT) \
-	  lib/Local/Iterator/File.pm $(INST_MAN3DIR)/Local::Iterator::File.$(MAN3EXT) \
-	  lib/Local/Interval.pm $(INST_MAN3DIR)/Local::Interval.$(MAN3EXT) \
-	  lib/Local/Iterator/Array.pm $(INST_MAN3DIR)/Local::Iterator::Array.$(MAN3EXT) \
 	  lib/Local/Iterator/Interval.pm $(INST_MAN3DIR)/Local::Iterator::Interval.$(MAN3EXT) \
-	  lib/Local/Iterator/Concater.pm $(INST_MAN3DIR)/Local::Iterator::Concater.$(MAN3EXT) \
-	  lib/Local/Iterator/Aggregator.pm $(INST_MAN3DIR)/Local::Iterator::Aggregator.$(MAN3EXT) 
+	  lib/Local/Iterator/Aggregator.pm $(INST_MAN3DIR)/Local::Iterator::Aggregator.$(MAN3EXT) \
+	  lib/Local/Iterator/RewindableIterator/Concater.pm $(INST_MAN3DIR)/Local::Iterator::RewindableIterator::Concater.$(MAN3EXT) \
+	  lib/Local/Iterator/RewindableIterator/Array.pm $(INST_MAN3DIR)/Local::Iterator::RewindableIterator::Array.$(MAN3EXT) \
+	  lib/Local/Iterator/Filter.pm $(INST_MAN3DIR)/Local::Iterator::Filter.$(MAN3EXT) \
+	  lib/Local/Iterator/Map.pm $(INST_MAN3DIR)/Local::Iterator::Map.$(MAN3EXT) \
+	  lib/Local/Interval.pm $(INST_MAN3DIR)/Local::Interval.$(MAN3EXT) \
+	  lib/Local/Iterator.pm $(INST_MAN3DIR)/Local::Iterator.$(MAN3EXT) \
+	  lib/Local/Iterator/RewindableIterator.pm $(INST_MAN3DIR)/Local::Iterator::RewindableIterator.$(MAN3EXT) \
+	  lib/Local/Iterator/RewindableIterator/File.pm $(INST_MAN3DIR)/Local::Iterator::RewindableIterator::File.$(MAN3EXT) 
 
 
 
@@ -472,22 +499,22 @@ clean_subdirs :
 
 clean :: clean_subdirs
 	- $(RM_F) \
-	  $(INST_ARCHAUTODIR)/extralibs.all $(BASEEXT).x \
-	  core $(BOOTSTRAP) \
-	  MYMETA.yml so_locations \
-	  core.[0-9][0-9][0-9][0-9][0-9] core.[0-9][0-9][0-9] \
+	  core pm_to_blib.ts \
+	  core.[0-9][0-9][0-9] lib$(BASEEXT).def \
+	  *$(LIB_EXT) $(MAKE_APERL_FILE) \
+	  so_locations core.[0-9][0-9] \
+	  pm_to_blib *$(OBJ_EXT) \
+	  blibdirs.ts $(BASEEXT).x \
+	  $(INST_ARCHAUTODIR)/extralibs.all perl.exe \
+	  tmon.out perlmain.c \
+	  MYMETA.yml $(BOOTSTRAP) \
 	  MYMETA.json perl$(EXE_EXT) \
-	  tmon.out core.*perl.*.? \
-	  $(BASEEXT).bso blibdirs.ts \
-	  perl.exe perlmain.c \
-	  $(MAKE_APERL_FILE) $(BASEEXT).def \
-	  $(INST_ARCHAUTODIR)/extralibs.ld pm_to_blib \
-	  *$(LIB_EXT) *perl.core \
-	  *$(OBJ_EXT) lib$(BASEEXT).def \
-	  core.[0-9][0-9][0-9][0-9] core.[0-9][0-9] \
-	  $(BASEEXT).exp core.[0-9] \
-	  pm_to_blib.ts mon.out \
-	  perl 
+	  *perl.core $(BASEEXT).def \
+	  $(BASEEXT).exp mon.out \
+	  core.*perl.*.? $(INST_ARCHAUTODIR)/extralibs.ld \
+	  core.[0-9][0-9][0-9][0-9][0-9] perl \
+	  core.[0-9][0-9][0-9][0-9] $(BASEEXT).bso \
+	  core.[0-9] 
 	- $(RM_RF) \
 	  blib 
 	- $(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD) $(DEV_NULL)
@@ -832,7 +859,6 @@ subdirs-test ::
 
 test_dynamic :: pure_all
 	PERL_DL_NONLAZY=1 $(FULLPERLRUN) "-MExtUtils::Command::MM" "-e" "test_harness($(TEST_VERBOSE), '$(INST_LIB)', '$(INST_ARCHLIB)')" $(TEST_FILES)
-	PERL_DL_NONLAZY=1 $(FULLPERLRUN) "-I$(INST_LIB)" "-I$(INST_ARCHLIB)" $(TEST_FILE)
 
 testdb_dynamic :: pure_all
 	PERL_DL_NONLAZY=1 $(FULLPERLRUN) $(TESTDB_SW) "-I$(INST_LIB)" "-I$(INST_ARCHLIB)" $(TEST_FILE)
@@ -860,13 +886,19 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  lib/Local/Iterator/File.pm blib/lib/Local/Iterator/File.pm \
-	  lib/Local/Iterator.pm blib/lib/Local/Iterator.pm \
-	  lib/Local/Interval.pm blib/lib/Local/Interval.pm \
+	  тест.pl $(INST_LIB)/Local/тест.pl \
+	  example of map.pl $(INST_LIB)/Local/example of map.pl \
+	  lib/Local/Iterator/RewindableIterator.pm blib/lib/Local/Iterator/RewindableIterator.pm \
+	  lib/Local/Iterator/RewindableIterator/File.pm blib/lib/Local/Iterator/RewindableIterator/File.pm \
+	  lib/Local/Iterator/RewindableIterator/Array.pm blib/lib/Local/Iterator/RewindableIterator/Array.pm \
 	  lib/Local/Iterator/Interval.pm blib/lib/Local/Iterator/Interval.pm \
-	  lib/Local/Iterator/Array.pm blib/lib/Local/Iterator/Array.pm \
+	  example of filter.pl $(INST_LIB)/Local/example of filter.pl \
 	  lib/Local/Iterator/Aggregator.pm blib/lib/Local/Iterator/Aggregator.pm \
-	  lib/Local/Iterator/Concater.pm blib/lib/Local/Iterator/Concater.pm 
+	  lib/Local/Iterator/RewindableIterator/Concater.pm blib/lib/Local/Iterator/RewindableIterator/Concater.pm \
+	  lib/Local/Iterator.pm blib/lib/Local/Iterator.pm \
+	  lib/Local/Iterator/Map.pm blib/lib/Local/Iterator/Map.pm \
+	  lib/Local/Iterator/Filter.pm blib/lib/Local/Iterator/Filter.pm \
+	  lib/Local/Interval.pm blib/lib/Local/Interval.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

@@ -1,9 +1,9 @@
-package Local::Iterator::Array;
+package Local::Iterator::RewindableIterator::Array;
 
 use strict;
-use warnings;
+use warnings;	
 use DDP;
-use base 'Local::RewindableIterator';
+use base 'Local::Iterator::RewindableIterator';
 
 sub next {
 	my ($self) = @_;

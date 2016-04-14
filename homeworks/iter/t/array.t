@@ -6,7 +6,7 @@ use Test::More tests => 6;
 use Local::Iterator::Array;
 
 my $array = [1, undef, 3];
-my $iterator = Local::Iterator::Array->new(array => $array);
+my $iterator = Local::Iterator::RewindableIterator::Array->new(array => $array);
 
 my ($next, $end);
 

@@ -2,29 +2,17 @@ package Local::Iterator::Map;
 
 use strict;
 use warnings;
-
-sub new {
-	my ($class, %params) = @_;
-	return bless \%params, $class;
-}
+use base 'Local::Iterator';
 
 sub next {
 	my ($self) = @_;
-	return $self->{"iterator"}->next();
-}
-
-sub map {
-	my ($self, $callback) = @_;
-	my $ret = [];
-	my $size = -1;
-	my ($next, $end) = Local::Iterator::Map::next($self);
-	while (!$self->{"iterator"}{"end"}) {
-		$size++;
-		$ret->[$size] = $callback->($next);
-		($next, $end) = Local::Iterator::Map::next($self);
+	my ($next, $end) = $self->{"iterator"}->next();
+	if ($end) {
+		$self->{"end"} = 1;
+		return (undef, 1);
 	}
-	$self->{"iterator"}->goToBegin($self);
-	return $ret;
+	$self->{"end"} = 0;
+	return ($self->{"callback"}->($next), 0);
 }
 
 =encoding utf8

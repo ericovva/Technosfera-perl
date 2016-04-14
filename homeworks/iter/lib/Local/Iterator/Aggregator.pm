@@ -5,30 +5,23 @@ use strict;
 no strict "refs";
 use warnings;
 use DDP;
-
-BEGIN {
-	use base 'Local::Iterator';
-}
-
-sub new {
-		my ($class, %params) = @_;
-		$params{"end"} = 0;
-		return bless \%params, $class;
-}
+use base 'Local::Iterator';
 
 sub next {
 	my ($self) = @_;
 	my $ret = [];
-	my $i;
-	for ($i = 0; $i < $self->{"chunk_length"}; $i++) {
+	my $was = 0;
+	for my $i (0..$self->{"chunk_length"} - 1) {
 		my ($next, $end) = $self->{"iterator"}->next();
 		if ($end) {
 			last;
 		} else {
 			$ret->[$i] = $next;
 		}
+		$was = 1;
 	}
-	if ($i != 0) {
+	
+	if ($was != 0) {
 		return ($ret, 0);
 	} else {
 		$self->{"end"} = 1;

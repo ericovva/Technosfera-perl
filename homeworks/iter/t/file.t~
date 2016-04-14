@@ -18,7 +18,7 @@ test_iterator(
 );
 
 test_iterator(
-    Local::Iterator::RewindableIterator::File->new(filename => $filename),
+    Local::Iterator::File->new(filename => $filename),
     'by name'
 );
 

@@ -1,9 +1,9 @@
-package Local::Iterator::Concater;
+package Local::Iterator::RewindableIterator::Concater;
 
 use strict;
 use warnings;
 use DDP;
-use base 'Local::RewindableIterator';
+use base 'Local::Iterator::RewindableIterator';
 
 
 sub next {

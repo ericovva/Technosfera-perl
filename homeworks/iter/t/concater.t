@@ -3,14 +3,14 @@ use warnings;
 
 use Test::More tests => 5;
 
-use Local::Iterator::Array;
-use Local::Iterator::Concater;
+use Local::Iterator::RewindableIterator::Array;
+use Local::Iterator::RewindableIterator::Concater;
 
-my $iterator = Local::Iterator::Concater->new(
+my $iterator = Local::Iterator::RewindableIterator::Concater->new(
     iterators => [
-        Local::Iterator::Array->new(array => [1, 2]),
-        Local::Iterator::Array->new(array => [3, 4]),
-        Local::Iterator::Array->new(array => [5, 6]),
+        Local::Iterator::RewindableIterator::Array->new(array => [1, 2]),
+        Local::Iterator::RewindableIterator::Array->new(array => [3, 4]),
+        Local::Iterator::RewindableIterator::Array->new(array => [5, 6]),
     ],
 );
 

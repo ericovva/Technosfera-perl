@@ -1,0 +1,42 @@
+package Local::Iterator::Rewindable;
+
+use strict;
+use warnings;
+use base 'Local::Iterator';
+
+sub goToBegin {
+	my ($self) = @_;
+	if ($self->{"name"} eq "File") {
+		my $fh = $self->{"fh"};
+		seek($fh, 0, 0);
+		$self->{"fh"} = $fh;
+		$self->{"_end"} = 0;
+		$self->{"end"} = 0;
+	} elsif ($self->{"name"} eq "Array") {
+		$self->{"cur"} = 0;
+		$self->{"end"} = 0;
+	} elsif ($self->{"name"} eq "Concater") {
+		$self->{"cur"} = 0;
+		$self->{"end"} = 0;
+	}
+}
+
+=encoding utf8
+
+=head1 NAME
+
+Local::RewindableIterator - base abstract iterator
+
+=head1 VERSION
+
+Version 1.00
+
+=cut
+
+our $VERSION = '1.00';
+
+=head1 SYNOPSIS
+
+=cut
+
+1;

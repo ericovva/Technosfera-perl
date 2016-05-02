@@ -1,0 +1,194 @@
+[6831]  core @0.000009> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[6831]  core @0.000164> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[6831]  core @0.000137> request: GET / from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[6831]  core @0.000441> [hit #1]Trying to match 'GET /' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[6831]  core @0.000544> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[6831]  core @0.006333> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[6831]  core @0.000288> request: GET /mypage from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[6831]  core @0.000915> [hit #2]Trying to match 'GET /mypage' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[6831]  core @0.001176> [hit #2]Trying to match 'GET /mypage' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[6831]  core @0.002833> [hit #2]response: 404 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[6871]  core @0.000009> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[6871]  core @0.000166> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[6871]  core @0.000388> request: GET /mypage from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[6871]  core @0.001966> [hit #1]Trying to match 'GET /mypage' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[6871]  core @0.002328> [hit #1]Trying to match 'GET /mypage' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[6871]  core @0.002586> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[6871]  core @0.004305> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[6871]  core @0.000151> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[6871]  core @0.001409> [hit #2]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[6954]  core @0.000011> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[6954]  core @0.000169> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[6954]  core @0.000134> request: GET /mypage from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[6954]  core @0.000453> [hit #1]Trying to match 'GET /mypage' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[6954]  core @0.000586> [hit #1]Trying to match 'GET /mypage' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[6954]  core @0.000690> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[6954]  core @0.001207> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[6954]  core @0.000129> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[6954]  core @0.001078> [hit #2]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7045]  core @0.000010> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[7045]  core @0.000162> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[7045]  core @0.000210> request: GET /mypage from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7045]  core @0.000700> [hit #1]Trying to match 'GET /mypage' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7045]  core @0.000918> [hit #1]Trying to match 'GET /mypage' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7045]  core @0.001106> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7045]  core @0.001980> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7045]  core @0.000140> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7045]  core @0.001222> [hit #2]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7045]  core @0.000181> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7045]  core @0.000589> [hit #3]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7045]  core @0.000724> [hit #3]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7045]  core @0.000834> [hit #3]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7045]  core @0.000930> [hit #3]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7045] error @0.001267> [hit #3]Supplied view (register) not found -  does not exist in /usr/local/share/perl/5.18.2/Dancer/Template/Abstract.pm l. 183
+[7045]  core @0.203121> [hit #3]response: 500 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7053]  core @0.000010> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[7053]  core @0.000214> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[7053]  core @0.000215> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7053]  core @0.000727> [hit #1]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7053]  core @0.000959> [hit #1]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7053]  core @0.001166> [hit #1]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7053]  core @0.001345> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7053]  core @0.012203> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7053]  core @0.000171> request: GET /css/style.css from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7053]  core @0.000801> [hit #2]response: 304 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7053]  core @0.000152> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7053]  core @0.001705> [hit #3]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7846]  core @0.000010> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[7846]  core @0.000177> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[7875]  core @0.000009> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[7875]  core @0.000163> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[7875]  core @0.000162> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000572> [hit #1]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000717> [hit #1]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000841> [hit #1]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000927> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.058821> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000358> request: GET /css/style.css from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000994> [hit #2]response: 304 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000131> request: GET /images/perldancer-bg.jpg from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000696> [hit #3]response: 304 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000169> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.001312> [hit #4]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000178> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000639> [hit #5]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000835> [hit #5]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001030> [hit #5]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001194> [hit #5]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.003274> [hit #5]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000177> request: GET /css/style.css from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000814> [hit #6]response: 304 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000207> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.002116> [hit #7]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000207> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000697> [hit #8]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000951> [hit #8]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001147> [hit #8]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001334> [hit #8]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.003758> [hit #8]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000234> request: GET /css/style.css from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000953> [hit #9]response: 304 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000126> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000395> [hit #10]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000506> [hit #10]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000598> [hit #10]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000681> [hit #10]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.001964> [hit #10]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000196> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000573> [hit #11]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000739> [hit #11]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000860> [hit #11]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001098> [hit #11]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.003090> [hit #11]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000165> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000559> [hit #12]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000723> [hit #12]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000852> [hit #12]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001157> [hit #12]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.003146> [hit #12]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000130> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000442> [hit #13]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000579> [hit #13]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000687> [hit #13]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000778> [hit #13]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.002476> [hit #13]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000130> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000481> [hit #14]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000634> [hit #14]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000747> [hit #14]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000864> [hit #14]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.002282> [hit #14]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000151> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000614> [hit #15]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000846> [hit #15]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001051> [hit #15]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.001247> [hit #15]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.003727> [hit #15]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000160> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000482> [hit #16]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000631> [hit #16]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000742> [hit #16]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000835> [hit #16]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.002274> [hit #16]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000129> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.000475> [hit #17]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000616> [hit #17]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000716> [hit #17]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7875]  core @0.000799> [hit #17]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7875]  core @0.002888> [hit #17]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7875]  core @0.000332> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7875]  core @0.001707> [hit #18]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7881]  core @0.000010> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[7881]  core @0.000158> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[7881]  core @0.000130> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7881]  core @0.000413> [hit #1]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7881]  core @0.000525> [hit #1]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7881]  core @0.000636> [hit #1]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7881]  core @0.000721> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7881]  core @0.021948> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7881]  core @0.000187> request: GET /css/style.css from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7881]  core @0.000871> [hit #2]response: 304 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7881]  core @0.000143> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7881]  core @0.001234> [hit #3]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7881]  core @0.000255> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7881]  core @0.000993> [hit #4]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7881]  core @0.001322> [hit #4]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7881]  core @0.001594> [hit #4]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[7881]  core @0.001828> [hit #4]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[7881]  core @0.005907> [hit #4]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7881]  core @0.000227> request: GET /css/style.css from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7881]  core @0.001104> [hit #5]response: 304 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[7881]  core @0.000147> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[7881]  core @0.000655> [hit #6]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[8011]  core @0.000010> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[8011]  core @0.000161> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[8011]  core @0.000151> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[8011]  core @0.000429> [hit #1]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8011]  core @0.000545> [hit #1]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8011]  core @0.000643> [hit #1]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8011]  core @0.000727> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[8011]  core @0.022522> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[8011]  core @0.000134> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[8011]  core @0.001121> [hit #2]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[8429]  core @0.000011> loading Dancer::Handler::Standalone handler in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 47
+[8429]  core @0.000161> loading handler 'Dancer::Handler::Standalone' in /usr/local/share/perl/5.18.2/Dancer.pm l. 495
+[8429]  core @0.000213> request: GET /register from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[8429]  core @0.000815> [hit #1]Trying to match 'GET /register' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8429]  core @0.001059> [hit #1]Trying to match 'GET /register' against /^\/mypage$/ (generated from '/mypage') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8429]  core @0.001272> [hit #1]Trying to match 'GET /register' against /^\/register$/ (generated from '/register') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8429]  core @0.001455> [hit #1]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[8429]  core @0.036989> [hit #1]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[8429]  core @0.000123> request: GET /favicon.ico from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[8429]  core @0.001052> [hit #2]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[8429]  core @0.000282> request: POST /register_user from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[8429]  core @0.001028> [hit #3]Trying to match 'POST /register_user' against /^\/register_user$/ (generated from '/register_user') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8429]  core @0.001352> [hit #3]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[8429]  core @0.000267> request: POST /mypage from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[8429]  core @0.000948> [hit #4]Trying to match 'POST /mypage' against /^\/register_user$/ (generated from '/register_user') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8429]  core @0.001260> [hit #4]Trying to match 'POST /mypage' against /^\/register_user$/ (generated from '/register_user') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8429]  core @0.002148> [hit #4]response: 404 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[8429]  core @0.002937> [hit #4]response: 404 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181
+[8429]  core @0.000170> request: GET / from 127.0.0.1 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 58
+[8429]  core @0.000560> [hit #5]Trying to match 'GET /' against /^\/$/ (generated from '/') in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 84
+[8429]  core @0.000731> [hit #5]  --> got 1 in /usr/local/share/perl/5.18.2/Dancer/Route.pm l. 92
+[8429]  core @0.006675> [hit #5]response: 200 in /usr/local/share/perl/5.18.2/Dancer/Handler.pm l. 181

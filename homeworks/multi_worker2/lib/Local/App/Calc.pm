@@ -30,17 +30,17 @@ sub start_server {
 			close($server);
 			#print "new connection\n";
 			$client->autoflush(1);
-			my $size;
+			my $size = 0;
 			$client->recv($size, 4);
-			$size = unpack("l", $size);
+			$size = unpack("L", $size);
 			for (my $i = 0; $i < $size; $i++) {
-				my $message = <$client>;
-				chomp($message);
-				$message = unpack("L/a*", $message);
-				#print "mes: $message \n";
+				my $message;
+				my $size_of_message;
+				$client->recv($size_of_message, 4);
+				$size_of_message = unpack("L", $size_of_message);
+				$client->recv($message, $size_of_message);
+				$message = unpack("a*", $message);
 				my $res;
-				my $ok = pack("L/a*", "ok")."\n";
-				my $bad = pack("L/a*", "bad")."\n";
 				my $err;
 				eval {
 					$res = calculate($message);

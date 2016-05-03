@@ -18,7 +18,7 @@ $SIG{INT} = sub {
 	exit 1;
 };
 our $status_file = './calc_status.txt';
-#my $arr = get_from_server(8082, 1000);
+#my $arr = get_from_server(8082, 10);
 #multi_calc(30, $arr, 8081);
 sub multi_calc {
 	unlink $status_file;
@@ -105,7 +105,7 @@ sub multi_calc {
 			Proto => "tcp",
 			Type => SOCK_STREAM
 		) or die "не могу подключиться к localhost";
-		send($socket, pack("l", scalar(@equals_copy)), 0);
+		send($socket, pack("L", scalar(@equals_copy)), 0);
 		#говорим серверу, сколько сейчас к нему придет примеров
 		my $file;
 		open($file, '>', "result_$child_id.txt");
@@ -139,7 +139,7 @@ sub multi_calc {
 		#отправляем наши примеры на сервер
 		for (my $i = 0; $i < scalar(@equals_copy); $i++) {
 			chomp($equals_copy[$i]);
-			send($socket, pack("L/a*", $equals_copy[$i])."\n", 0);
+			send($socket, pack("L/a*", $equals_copy[$i]), 0);
 			my $ans;
 			my $size_of_message;
 			my $message;
@@ -220,9 +220,15 @@ sub get_from_server {
 		Proto => "tcp",
 		Type => SOCK_STREAM
 	) or die "Can`t connect to localhost $/";
-	$limit = pack("l", $limit);
+	$limit = pack("L", $limit);
 	send($socket, $limit, 0);
-	my @answer = <$socket>;
+	my $size_of_answer;
+	$socket->recv($size_of_answer, 4);
+	my $answer;
+	$size_of_answer = unpack("L", $size_of_answer);
+	$socket->recv($answer, $size_of_answer);
+	$answer = unpack("a*", $answer);
+	my @answer = split("\n", $answer);
 	close($socket);
 	return \@answer;
 }

@@ -63,11 +63,13 @@ sub start_server {
 		$client->autoflush(1);
 		my $N;
 		$client->recv($N, 4);
-		$N = unpack("l", $N);
+		$N = unpack("L", $N);
 		my $other = getpeername($client);
 		my ($arr, $host, $service) = getnameinfo($other);
 		print "New connection from: $host:$service $/";
-		print $client join("\n", @{get($N)});
+		my $res_to_str = join("\n", @{get($N)});
+		#print $client join("\n", @{get($N)});
+		send($client, pack("L/a*", $res_to_str), 0);
 		close($client);
 		ualarm($timer);
 	}

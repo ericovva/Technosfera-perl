@@ -1,0 +1,17 @@
+Hello, <% user_name %><br />
+Изменить данные: <br />
+<div id="info_for_user"><% info_for_user %></div>
+<form method="get" action="/change_data?from=<% user_name %>">
+	Login:<input name="login" type = "text" /><br/>
+	Password:<input name="pass" type="text" /><br/>
+	Project:<input name="project" type="text" /><br />
+	<input type="hidden" name="from" value ="<%user_name%>" />
+	<input type="hidden" name="who" value="<%user_name%>" />
+	<input type ='submit' value ='Изменить' /><br />
+</form>
+<a href = "/login?log_out=1">Выйти</a>
+<br />
+<a href = "/get_token">Получить токен</a>
+<div id="token"> <% token %> </div><br />
+<a href = "/delete?from=<%user_name%>&who=<%user_name%>">Удалить страницу</a><br />
+<a href = "/root">Управление пользователями</a>

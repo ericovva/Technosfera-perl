@@ -1,3 +1,4 @@
+<div id="info_for_user"><%info_for_user%></div>
 <form method="post" action="/register_user">
 	Login:<input name="login" type = "text" /><br/>
 	Password:<input name="pass" type="text" /><br/>
@@ -5,3 +6,4 @@
 	<input type ='submit' value ='Register' />
 </form>
 <a href="/login">Авторизация</a>
+

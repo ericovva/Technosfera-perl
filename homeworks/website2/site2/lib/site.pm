@@ -13,7 +13,7 @@ use LWP::UserAgent;
 use Dancer::Config::Object;
 
 our $VERSION = '0.1';
-set template => 'template_toolkit';
+my $user_file_path = config->{"path_to_user_file"};	 
 get '/' => sub {
     template 'index';
 };
@@ -29,7 +29,7 @@ sub deb {
 }
 sub exist_login {
 	my $users;
-	open($users, "<", "users.txt");
+	open($users, "<", $user_file_path);
 	my $login = shift;
 	while (my $line = <$users>) {
 		chomp($line);
@@ -46,7 +46,7 @@ sub exist_login {
 
 sub get_info_user {
 	my $users;
-	open($users, "<", "users.txt");
+	open($users, "<", $user_file_path);
 	my $login = shift;
 	while (my $line = <$users>) {
 		chomp($line);
@@ -87,7 +87,7 @@ get '/root' => sub {
 			my $content;
 			$content .= '<table style="width:100%">';
 			my $users;
-			open($users, "<", "users.txt");
+			open($users, "<", $user_file_path);
 			while (my $line = <$users>) {
 				chomp($line);
 				$content .= "<tr>";
@@ -154,7 +154,7 @@ any ['get', 'post'] => '/xml' => sub {
 	my $users;
 	my $user_file;
 	my $cur_time = time;
-	open($user_file, "<", "users.txt");
+	open($user_file, "<", $user_file_path);
 	my @user_rows;
 	while (my $line = <$user_file>) {
 		chomp($line);
@@ -168,7 +168,7 @@ any ['get', 'post'] => '/xml' => sub {
 		push(@user_rows, join('#', ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc)));
 	}
 	close($user_file);
-	open($user_file, ">", "users.txt");
+	open($user_file, ">", $user_file_path);
 	for my $i (@user_rows) {
 		print $user_file $i."\n";
 	}
@@ -208,7 +208,7 @@ any ['get', 'post'] => '/delete' => sub {
 	if (session("user_name") eq param "who" or $info_session->{"root"}) {
 		#delete
 		my $file;
-		open($file, "<", "users.txt");
+		open($file, "<", $user_file_path);
 		my @new_list;
 		while(my $line = <$file>) {
 			chomp($line);
@@ -218,7 +218,7 @@ any ['get', 'post'] => '/delete' => sub {
 			}
 		}
 		close($file);
-		open($file, ">", "users.txt");
+		open($file, ">", $user_file_path);
 		for my $i(@new_list) {
 			print $file $i."\n";
 		}
@@ -296,7 +296,7 @@ any ['get', 'post'] => '/change_data' => sub {
 		}
 		my @last_rows;
 		my $users;
-		open($users, "<", "users.txt");
+		open($users, "<", $user_file_path);
 		my $cont = 0;
 		p @user_prop;
 		while (my $line = <$users>) {
@@ -311,8 +311,8 @@ any ['get', 'post'] => '/change_data' => sub {
 			push(@last_rows, $line);
 		}
 		close($users);
-		unlink "users.txt";
-		open($users, ">", "users.txt");
+		unlink $user_file_path;
+		open($users, ">", $user_file_path);
 		foreach my $i (@last_rows) {
 			print $users $i;
 			print $users "\n";
@@ -334,7 +334,9 @@ get '/register' => sub {
 	if (param "good") {
 		template 'sucsess_reg'
 	} elsif (param "login_ex") {
-		template 'login_exist';
+		template 'register' => {"info_for_user" => "Такой логин уже занят"};
+	} elsif (param "wrong_syntax") {
+		template 'register' => {"info_for_user" => "Введные данные содержат недопустимый символ: #"};
 	} else {
 		template 'register';
 	}
@@ -342,13 +344,16 @@ get '/register' => sub {
 any ['get', 'post'] => '/register_user' => sub {
 	
 	my $login = param "login";
+	if ($login =~ /#/g or param("pass") =~ /#/g or param("project") =~ /#/g) {
+		return redirect '/register?wrong_syntax=1';
+	}
 	if (exist_login($login)) {
 		return redirect '/register?login_ex=1';
 	}
 	my $pass = param "pass";
 	my $projectName = param "project";
 	my $users;
-	open($users, ">>", "users.txt");
+	open($users, ">>", $user_file_path);
 	#login.password.project.token.token_data.root.last_rpc.limit_rpc
 	print $users $login."#".$pass."#".$projectName."#"."NoToken"."#"."NoTokenData"."#"."0"."#"."0"."#"."100"."\n";
 	close($users);
@@ -376,7 +381,7 @@ post '/check_login' => sub {
 	my $login = param "login";
 	my $pass = param "pass";
 	my $users;
-	open($users, "<", "users.txt");
+	open($users, "<", $user_file_path);
 	while (my $line = <$users>) {
 		chomp($line);
 		my ($login_ex, $pass_ex) = split('#', $line);

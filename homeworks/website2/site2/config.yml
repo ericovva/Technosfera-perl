@@ -27,6 +27,7 @@ template: "template_toolkit"
 #     end_tag:   '%]'
 default_limit_rpc: 100
 default_token_live: 300
+path_to_user_file: users.txt
 #5 * 60 = 300
 # For session support enable the following line and see Dancer::Session
 #session: "YAML"

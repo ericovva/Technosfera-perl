@@ -1,0 +1,41 @@
+<style type="text/css">
+   TABLE {
+    border-collapse: collapse;
+   }
+   TD, TH {
+    padding: 3px;
+    border: 1px solid black;
+   }
+   TH {
+    background: #b0e0e6;
+   }
+  </style>
+<% content %>
+<br>
+<form id ="change_form" method = "get" action = "/change_data">
+	Имя пользователя (для редактирования) <input type="text" name = "who" />
+	Что изменить:
+	<select form ="change_form" name ="change_value">
+		<option value ="login">login</option>
+		<option value ="pass">pass</option>
+		<option value ="project">project</option>
+		<option value ="token">token</option>
+		<option value ="token_data">token_data</option>
+		<option value ="root">root</option>
+		<option value ="last_rpc">last_rpc</option>
+		<option value ="limit_rpc">limit_rpc</option>
+	</select>
+	Новое значение: <input type = "text" name = "value" /><br />
+	<input type = "hidden" name = "from" value ="<%user_name%>" />
+	<input type = "hidden" name = "is_root" value="1" />
+	<input type = "submit" value = "Изменить" />
+	</form>
+<form id="delete_form" method="get" action = "/delete">
+	Удалить пользователя: <input type = "text" name = "who" />
+	<input type = "hidden" name = "from" value = "<%user_name%>" />
+	<input type = "hidden" name = "is_root" value = "1" />
+	<input type = "submit" value = "Удалить" />
+</form>
+<a href = '/mypage'>Личная страница</a>
+<div id = "info_for_user"><% info_for_user %> </div>
+Time: <%time%>

@@ -18,11 +18,12 @@ $SIG{INT} = sub {
 	exit 1;
 };
 our $status_file = './calc_status.txt';
-#my $arr = get_from_server(8082, 1000);
-#multi_calc(35, $arr, 8081);
+my $arr = get_from_server(8082, 10);
+multi_calc(1, $arr, 8081);
 sub multi_calc {
 	unlink $status_file;
 	unlink "result.txt";
+	p $arr;
     # На вход получаем 3 параметра
     my $fork_cnt = shift;  # кол-во паралельных потоков в котором мы будем обрабатывать задания
     my $jobs = shift;      # пул заданий

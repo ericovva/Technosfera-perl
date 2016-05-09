@@ -66,7 +66,7 @@ sub start_server {
 	}
 	close($server);
 }
-#start_server(8082);
+start_server(8082);
 
 
 sub get {

@@ -6,7 +6,7 @@ my $uri = "http://localhost:3000/rpc";
 my $rpc = XML::RPC::Fast->new(
 	$uri,
 	ua => XML::RPC::UA::LWP->new(
-		ua      => 'YourApp/0.1',
+		ua      => 'Dancer site',
 		timeout => 3,
 	),
 );

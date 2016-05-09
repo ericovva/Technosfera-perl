@@ -5,7 +5,10 @@ use DBI;
 use HTTP::Request;
 use LWP::UserAgent;
 use Config::Simple;
+
+#Чтобы точки выводились в "online"
 $| = 1;
+
 
 sub showMe {
 	my ($self) = @_;
@@ -33,6 +36,11 @@ sub get_html {
 	my $resp = $user_agent->request($req);
 	print $html_text $resp->content();
 	close($html_text);
+}
+
+sub config {
+	my ($self, $param) = @_;
+	return $self->{"config"}->get($param);
 }
 
 sub send {

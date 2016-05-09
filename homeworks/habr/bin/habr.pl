@@ -88,8 +88,16 @@ if ($ARGV[0] eq "user") {
 	}
 	$p->setData(\@result);
 }
-if ($format eq "json") {
-	p $p->json();
-} elsif ($format eq "xml") {
-	$p->xml($p->config("filename.for_xml"));
+if (defined $p) {
+	if (defined $format) {
+		if ($format eq "json") {
+			p $p->json();
+		} elsif ($format eq "xml") {
+			$p->xml($p->config("filename.for_xml"));
+		}
+	} else {
+		die "Нет формата входных данных \n";
+	}
+} else {
+	die "Неправильные ключи в командной строке \n";
 }

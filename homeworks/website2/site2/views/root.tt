@@ -12,7 +12,7 @@
   </style>
 <% content %>
 <br>
-<form id ="change_form" method = "get" action = "/change_data">
+<form id ="change_form" method = "post" action = "/change_data">
 	Имя пользователя (для редактирования) <input type="text" name = "who" />
 	Что изменить:
 	<select form ="change_form" name ="change_value">
@@ -28,12 +28,14 @@
 	Новое значение: <input type = "text" name = "value" /><br />
 	<input type = "hidden" name = "from" value ="<%user_name%>" />
 	<input type = "hidden" name = "is_root" value="1" />
+	<input type="hidden" name="auth_token" value="<%auth_token%>" />
 	<input type = "submit" value = "Изменить" />
 	</form>
-<form id="delete_form" method="get" action = "/delete">
+<form id="delete_form" method="post" action = "/delete">
 	Удалить пользователя: <input type = "text" name = "who" />
 	<input type = "hidden" name = "from" value = "<%user_name%>" />
 	<input type = "hidden" name = "is_root" value = "1" />
+	<input type= "hidden" name="auth_token" value="<%auth_token%>" />
 	<input type = "submit" value = "Удалить" />
 </form>
 <a href = '/mypage'>Личная страница</a>

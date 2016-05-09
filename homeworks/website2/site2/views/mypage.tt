@@ -1,17 +1,29 @@
 Hello, <% user_name %><br />
 Изменить данные: <br />
 <div id="info_for_user"><% info_for_user %></div>
-<form method="get" action="/change_data?from=<% user_name %>">
+<form method="post" action="/change_data">
 	Login:<input name="login" type = "text" /><br/>
 	Password:<input name="pass" type="text" /><br/>
 	Project:<input name="project" type="text" /><br />
 	<input type="hidden" name="from" value ="<%user_name%>" />
 	<input type="hidden" name="who" value="<%user_name%>" />
+	<input type="hidden" name="auth_token" value="<%auth_token%>" />
 	<input type ='submit' value ='Изменить' /><br />
 </form>
 <a href = "/login?log_out=1">Выйти</a>
 <br />
-<a href = "/get_token">Получить токен</a>
+<form method="post" action="/change_data">
+	<input type="hidden" name="get_token" value="1" />
+	<input type="hidden" name="from" value ="<%user_name%>" />
+	<input type="hidden" name="who" value="<%user_name%>" />
+	<input type="hidden" name="auth_token" value="<%auth_token%>" />
+	<input type="submit" value = "Получить токен" />
+</form>
 <div id="token"> <% token %> </div><br />
-<a href = "/delete?from=<%user_name%>&who=<%user_name%>">Удалить страницу</a><br />
+<form method="post" action="/delete">
+	<input type="hidden" name="from" value ="<%user_name%>" />
+	<input type="hidden" name="who" value="<%user_name%>" />
+	<input type="hidden" name="auth_token" value="<%auth_token%>" />
+	<input type="submit" value = "Удалить страницу" />
+</form>
 <a href = "/root">Управление пользователями</a>

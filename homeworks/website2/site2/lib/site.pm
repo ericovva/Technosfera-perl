@@ -20,6 +20,11 @@ get '/' => sub {
 sub clear_write {
 	unlink "logs.txt";
 };
+
+sub clear_session {
+	session->destroy;
+}
+
 sub deb {
 	my $file;
 	open($file, ">>", "logs.txt");
@@ -27,6 +32,7 @@ sub deb {
 	print $file $info;
 	close($file);
 }
+
 sub exist_login {
 	my $users;
 	open($users, "<", $user_file_path);
@@ -34,7 +40,7 @@ sub exist_login {
 	while (my $line = <$users>) {
 		chomp($line);
 		my ($login_ex) = ($line =~ m/^(.*?)#/);
-	#	print "login_ex: $login_ex \n";
+		#print "login_ex: $login_ex \n";
 		if ($login_ex eq $login) {
 			close($users);
 			return 1;
@@ -79,6 +85,7 @@ get '/root' => sub {
 		} else {
 			my $templ;
 			$templ->{"time"} = time;
+			$templ->{"auth_token"} = session("auth_token");
 			if (param "login_ex") {
 				$templ->{"info_for_user"} = "Такой логин уже кем-то занят";
 			} elsif (param "no_info") {
@@ -109,7 +116,7 @@ any ['get', 'post'] => '/mypage' => sub {
 	if (!session("log_in")) {
 		return redirect '/login';
 	} else {
-		my $templ = {user_name => session("user_name")};
+		my $templ = {user_name => session("user_name"), auth_token => session("auth_token")};
 		if (param "change") {
 			$templ->{"info_for_user"} = "Данные успешно изменены";
 		} elsif (param "no_info") {
@@ -138,68 +145,14 @@ any ['get', 'post'] => '/mypage' => sub {
 	}
 };
 
-any ['get', 'post'] => '/get_token' => sub {
-	#token only for 5 minutes
+#delete?from=root&who=login&is_root=1
+post '/delete' => sub {
 	if (!session("log_in")) {
 		return redirect '/login';
-	} else {
-		my $token = time;
-		my $date = time;
-		clear_write();
-		$token = ($token *  int(rand(177239))) % (1e9 + 7);
-		return redirect "/change_data?from=".session("user_name")."&token=$token&token_data=$date";
 	}
-};
-any ['get', 'post'] => '/xml' => sub {
-	my $users;
-	my $user_file;
-	my $cur_time = time;
-	open($user_file, "<", $user_file_path);
-	my @user_rows;
-	while (my $line = <$user_file>) {
-		chomp($line);
-		my ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc) = split('#', $line);
-		if ($token_data !~ /[^0-9]/g) {
-			if ($cur_time - $token_data <= config->{"default_token_live"} and ($cur_time - $last_rpc > $limit_rpc or $last_rpc == 0)) {
-				$users->{$name} = $token;
-				$last_rpc = time;
-			}
-		}
-		push(@user_rows, join('#', ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc)));
+	if (param("auth_token") ne session("auth_token")) {
+		return redirect '/login';
 	}
-	close($user_file);
-	open($user_file, ">", $user_file_path);
-	for my $i (@user_rows) {
-		print $user_file $i."\n";
-	}
-	close($user_file);
-	auth_basic users => $users;
-    my $request = request->body;
-    $request = XML::Simple->new()->XMLin($request);
-    my $calc_func = {
-		"calc.evaluate" => \&evaluate,
-	};
-    if (not exists $calc_func->{$request->{"methodName"}}) {
-		#error no func
-		my $response = "<methodResponse><fault><value><string>No such function</string></value></fault></methodResponse>";
-		return $response;
-	} else {
-		my $value = $request->{"params"}->{"param"}->{"value"}->{"string"};
-		eval {
-			my $ans = evaluate(rpn($value));
-			my $response = "<methodResponse><params><param><value><double>".$ans."</double></value></param></params></methodResponse>";
-			return $response;
-		} or do {
-			#error in calc
-			my $response = "<methodResponse><fault><value><string>".$@."</string></value></fault></methodResponse>";
-			p $response;
-			return $response;
-		}
-	}
-};
-#delete?from=root&who=login&is_root=1
-
-any ['get', 'post'] => '/delete' => sub {
 	my $info_session = get_info_user(session("user_name"));
 	if (not defined $info_session) {
 		return redirect "/root?no_info=1" if param "is_root";
@@ -224,8 +177,7 @@ any ['get', 'post'] => '/delete' => sub {
 		}
 		close($file);
 		return redirect "/root" if param "is_root";
-		session "user_name" => undef;
-		session "log_in" => 0;
+		clear_session();
 		return redirect '/login?delete=1';
 	} else {
 		return redirect "/root?access=1" if param "is_root";
@@ -233,11 +185,13 @@ any ['get', 'post'] => '/delete' => sub {
 	}
 };
 #change_data?from=root&who=login&login=new_login&pass=new_pass&is_root=1
-
-any ['get', 'post'] => '/change_data' => sub {
+post '/change_data' => sub {
 	if (!session("log_in")) {
 		return redirect '/login';
 	} else {
+		if (param("auth_token") ne session("auth_token")) {
+			return redirect '/login';
+		}
 		my $login;
 		my $from_user_info = get_info_user(param "from");
 		if (!defined $from_user_info) {
@@ -256,15 +210,21 @@ any ['get', 'post'] => '/change_data' => sub {
 			return redirect '/mypage?no_info=1' if !(defined (param "is_root"));
 			return redirect '/root?no_info=1';
 		}
-		
 		my %old_info = %{$old_info};
+		if (param "get_token") {
+			my $token = time;
+			my $date = time;
+			clear_write();
+			$token = ($token *  int(rand(177239))) % (1e9 + 7);
+			$old_info{"token"} = $token;
+			$old_info{"token_data"} = $date;
+		}
 		my @prop_names = ("login", "pass", "project", "token", "token_data");
 		my @root_prop_names = ("root", "last_rpc", "limit_rpc");
 		my %param;
 		for my $i (@prop_names) {
 			$param{$i} = param $i if param $i;
 		}
-		#$param{"root"} = param "root" if param "root";
 		for my $i (@root_prop_names) {
 			$param{$i} = param $i if param $i;
 		}
@@ -272,14 +232,12 @@ any ['get', 'post'] => '/change_data' => sub {
 			$param{param "change_value"} = param "value";
 		}
 		my @user_prop;
-		my $cnt = 0;
 		for my $i (@prop_names) {
 			if (exists $param{$i}) {
-				$user_prop[$cnt] = $param{$i};
+				push(@user_prop, $param{$i});
 			} else {
-				$user_prop[$cnt] = $old_info{$i};
+				push(@user_prop, $old_info{$i});
 			}
-			$cnt++;
 		}
 		for my $i (@root_prop_names) {
 			if (exists($param{$i}) and $from_user_info->{"root"}) {
@@ -298,7 +256,6 @@ any ['get', 'post'] => '/change_data' => sub {
 		my $users;
 		open($users, "<", $user_file_path);
 		my $cont = 0;
-		p @user_prop;
 		while (my $line = <$users>) {
 			chomp($line);
 			if (!$cont) {
@@ -325,39 +282,44 @@ any ['get', 'post'] => '/change_data' => sub {
 			return redirect '/mypage?change=1';
 		}
 	}
+	return "hello";
 };
 
-get '/register' => sub {
+any ['get', 'post'] => '/register' => sub {
 	if (session("log_in")) {
 		return redirect '/mypage';
 	}
-	if (param "good") {
+	if (param "login") {
+		my $login = param "login";
+		if ($login =~ /[^A-Za-z@\.1-9]+/gm) {
+			return redirect '/register?wrong_syntax=1';
+		}
+		if (param("pass") =~ /[^A-Za-z@\.\s:\/\\1-9]/gm) {
+			return redirect '/register?wrong_syntax=1';
+		}
+		if (param("pass") =~ /[^A-Za-z@\.\s:\/\\1-9]/gm) {
+			return redirect '/register?wrong_syntax=1';
+		}
+		if (exist_login($login)) {
+			return redirect '/register?login_ex=1';
+		}
+		my $pass = param "pass";
+		my $projectName = param "project";
+		my $users;
+		open($users, ">>", $user_file_path);
+		#login.password.project.token.token_data.root.last_rpc.limit_rpc
+		print $users $login."#".$pass."#".$projectName."#"."NoToken"."#"."NoTokenData"."#"."0"."#"."0"."#"."100"."\n";
+		close($users);
+		return redirect '/register?good=1';
+	} elsif (param "good") {
 		template 'sucsess_reg'
 	} elsif (param "login_ex") {
 		template 'register' => {"info_for_user" => "Такой логин уже занят"};
 	} elsif (param "wrong_syntax") {
-		template 'register' => {"info_for_user" => "Введные данные содержат недопустимый символ: #"};
+		template 'register' => {"info_for_user" => "Введные данные содержат недопустимый символ:"};
 	} else {
 		template 'register';
 	}
-};
-any ['get', 'post'] => '/register_user' => sub {
-	
-	my $login = param "login";
-	if ($login =~ /#/g or param("pass") =~ /#/g or param("project") =~ /#/g) {
-		return redirect '/register?wrong_syntax=1';
-	}
-	if (exist_login($login)) {
-		return redirect '/register?login_ex=1';
-	}
-	my $pass = param "pass";
-	my $projectName = param "project";
-	my $users;
-	open($users, ">>", $user_file_path);
-	#login.password.project.token.token_data.root.last_rpc.limit_rpc
-	print $users $login."#".$pass."#".$projectName."#"."NoToken"."#"."NoTokenData"."#"."0"."#"."0"."#"."100"."\n";
-	close($users);
-	return redirect '/register' . "?good=1";
 };
 get '/login' => sub {
 	my $templ;
@@ -365,8 +327,7 @@ get '/login' => sub {
 	if (param "wrong") {
 		$templ->{"info_for_user"} = "Неверный логин или пароль";
 	} elsif (param "log_out") {
-		session "user_name" => undef;
-		session "log_in", 0;
+		clear_session();
 		$templ->{"info_for_user"} = "Вы успешно вышли из своего профиля";
 	} elsif (param "delete") {
 		$templ->{"info_for_user"} = "Страница успешно удалена!";
@@ -388,6 +349,7 @@ post '/check_login' => sub {
 		if ($login_ex eq $login and $pass_ex eq $pass) {
 			session "log_in" => 1;
 			session "user_name" => $login;
+			session("auth_token", int(rand(9030133)) % (1e9 + 7));
 			return redirect '/mypage';
 		}
 	}

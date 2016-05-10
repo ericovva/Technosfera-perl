@@ -20,7 +20,7 @@ sub init {
 sub get_from_habr {
 	my ($self) = @_;
 	$self->{"data"}->[0]->{"post_id"} = $self->{"post_id"};
-	$self->get_html("post.html") if !$self->{"again"};
+	$self->get_html($self->{"config"}->param("filename.for_post")) if !$self->{"again"};
 	my $parser = HTML::Parser->new(
 		api_version => 3,
 		start_h => [
@@ -87,7 +87,7 @@ sub get_from_habr {
 			}, "text"],
 		default_h => [sub {}, ""],
 	);
-	$parser->parse_file("post.html");
+	$parser->parse_file($self->{"config"}->param("filename.for_post"));
 	if (exists($self->{"data"}->[0]->{"author"})) {
 		return 1;
 	} elsif (!$self->{"again"}) {

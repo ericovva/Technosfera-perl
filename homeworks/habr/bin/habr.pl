@@ -14,8 +14,45 @@ use JSON::XS;
 my $format;
 my $refresh;
 my $p;
-
-if ($ARGV[0] eq "user") {
+if ($ARGV[0] eq "create_db") {
+	$p = Local::Request->new(
+		"query" => "CREATE TABLE users (
+			id integer primary key autoincrement, 
+			nickname varchar(50), 
+			karma float, 
+			rank float
+		)",
+	);
+	my $db;
+	open($db, ">", $p->config("database.filename"));
+	close($db);
+	$db = $p->send(-1);
+	$p = Local::Request->new(
+		"query" => "CREATE TABLE posts (
+			author varchar(50),
+			theme text,
+			rank float,
+			views integer,
+			stars integer,
+			id integer,
+			author_comment integer
+		)",
+	);
+	$db += $p->send(-1);
+	$p = Local::Request->new(
+		"query" => "CREATE TABLE commenters (
+			nickname varchar(50),
+			id integer
+		)",
+	);
+	$db += $p->send(-1);
+	if ($db == 3) {
+		print "База данных успешно создана!\n";
+	} else {
+		print "Ошибка в создании базы данных\n";
+	}
+	exit;
+} elsif ($ARGV[0] eq "user") {
 	my $name;
 	my $post_id;
 	GetOptions("name=s" => \$name, "post=i", \$post_id, "format=s" => \$format, "refresh" => \$refresh);
@@ -50,19 +87,12 @@ if ($ARGV[0] eq "user") {
 		$refresh = 0;
 	}
 	$p = Local::Request->new(
-		"query" => "select author from posts where author_comment = 1"
+		"query" => "select u.nickname, u.rank, u.karma from posts p join users u where p.author_comment=1 and u.nickname=p.author"
 	);
 	my @result;
 	my $sth = $p->send(1);
-	while (my $author = $sth->fetchrow_arrayref()) {
-		my $user = Local::User->new("nickname" => $author->[0], "refresh" => $refresh);
-		$user->get_info();
-		my $error = $user->getError();
-		if (defined $error) {
-			warn $error;
-		} else {
-			push(@result, $user->getData());
-		}
+	while (my $row_res = $sth->fetchrow_hashref) {
+		push(@result, $row_res);
 	}
 	$p->setData(\@result);
 } elsif ($ARGV[0] eq "desert_posts") {
@@ -72,19 +102,12 @@ if ($ARGV[0] eq "user") {
 		$refresh = 0;
 	}
 	$p = Local::Request->new(
-		"query" => "select id from posts where amount_commenters < $n"
+		"query" => "select p.theme, p.rank, p.stars, p.views, p.author, p.id from commenters c join posts p where c.id=p.id group by c.id having count(distinct c.nickname) < $n"
 	);
 	my $sth = $p->send(1);
 	my @result;
-	while (my $id = $sth->fetchrow_arrayref()) {
-		my $post = Local::Post->new("post_id" => $id->[0], "refresh" => $refresh);
-		$post->get_info();
-		my $error = $post->getError();
-		if (defined $error) {
-			warn $error;
-		} else {
-			push(@result, $post->getData());
-		}
+	while (my $row_res = $sth->fetchrow_hashref) {
+		push(@result, $row_res);
 	}
 	$p->setData(\@result);
 }

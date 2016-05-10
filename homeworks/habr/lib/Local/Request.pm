@@ -40,21 +40,27 @@ sub get_html {
 
 sub config {
 	my ($self, $param) = @_;
-	return $self->{"config"}->get($param);
+	return $self->{"config"}->param($param);
 }
 
 sub send {
 	my ($self, $all) = @_;
 	my $dbh = DBI->connect(
-		$self->{"config"}->param("database.name"), 
+		$self->{"config"}->param("database.name").$self->{"config"}->param("database.filename"), 
 		$self->{"config"}->param("database.login"), 
-		$self->{"config"}->param("database.password")
+		$self->{"config"}->param("database.password"),
+		{sqlite_use_immediate_transaction => 1,}
 	);
 	my $sth = $dbh->prepare($self->{"query"});
+	#p $self;
 	print '.';
-	$sth->execute();
-	return $sth if $all;
-	return $sth->fetchrow_hashref();
+	if ($sth->execute()) {
+		return 1 if $all == -1;
+	} else {
+		return 0;
+	}
+	return $sth if $all == 1;
+	return $sth->fetchrow_hashref() if not defined $all;
 }
 
 sub json {

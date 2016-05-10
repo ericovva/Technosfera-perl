@@ -95,7 +95,7 @@ sub get_from_habr {
 			default_h => [sub {}, ""],
 		);
 		$parse->parse_file($self->{"config"}->param("filename.for_user"));
-		if (exists($self->{"data"}->[0]->{"rank"})) {
+		if (exists($self->{"nickname"})) {
 			return 1;
 		} elsif (!$self->{"again"}) {
 			$self->{"again"} = 1;

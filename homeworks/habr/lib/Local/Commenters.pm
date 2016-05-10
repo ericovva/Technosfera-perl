@@ -34,6 +34,10 @@ sub get_from_habr {
 				if ($self->{"is_comment_user"}) {
 					$text =~ s/@//;
 					if (!$self->{"used"}{$text}) {
+						#p $text;
+						if ($text eq $self->{"author"}) {
+							$self->{"author_comment"} = 1;
+						}
 						$self->{"used"}{$text} = 1;
 						my $p = Local::User->new("nickname" => $text, "refresh" => $self->{"refresh"});
 						$p->get_info();
@@ -41,6 +45,12 @@ sub get_from_habr {
 							warn $p->{"error"};
 						} else {
 							push(@{$self->{"data"}}, $p->{"data"}->[0]);
+							my $req = Local::Request->new("query" => "select * from commenters where nickname=\"".$p->{"nickname"}."\" and id=".$self->{"post_id"});
+							my $ans = $req->send();
+							if (!$ans) {
+								$req->{"query"} = "insert into commenters (nickname, id) values (\"".$p->{"nickname"}."\",".$self->{"post_id"}.")";
+								$req->send();
+							}
 						}
 					}
 					$self->{"is_comment_user"} = 0;
@@ -48,8 +58,8 @@ sub get_from_habr {
 			}, "text"],
 		default_h => [sub {}, ""],
 	);
-	$self->get_html("commenters.html");
-	$parser->parse_file("commenters.html");
+	$self->get_html($self->{"config"}->param("filename.for_commenters"));
+	$parser->parse_file($self->{"config"}->param("filename.for_commenters"));
 	if (exists($self->{"data"})) {
 		return 1;
 	} else {
@@ -64,45 +74,39 @@ sub get_info {
 	my $info = undef;
 	$info = $self->send();
 	if (defined($info->{"id"})) {
+		$self->{"author"} = $info->{"author"};
 		if ($self->{"refresh"}) {
 			if (!$self->get_from_habr()) {
 				return;
 			}
-			my @users;
-			for my $i (keys $self->{"used"}) {
-				push(@users, $i);
-				if ($i eq $info->{"author"}) {
-					$self->{"author_comment"} = 1;
-				}
-			}
-			$self->{"query"} = "update posts set commenters=\"".join(',', @users)."\", author_comment=".$self->{"author_comment"}.", amount_commenters=".scalar(@users)." where id=".$info->{"id"};
+			$self->{"query"} = "update posts set author_comment=".$self->{"author_comment"}." where id=".$info->{"id"};
 		} else {
-			if (defined($info->{"commenters"})) {
-				my @users = split(',', $info->{"commenters"});
-				for my $i (@users) {
-					my $p = Local::User->new("nickname" => $i, "refresh" => $self->{"refresh"});
+			$self->{"query"} = "select nickname from commenters where id=".$self->{"post_id"};
+			my $sth = $self->send(1);
+			my $ans = $sth->fetchrow_hashref();
+			if ($ans) {
+				while(1) {				
+					my $p = Local::User->new("nickname" => $ans->{"nickname"}, "refresh" => $self->{"refresh"});
 					$p->get_info();
 					if (exists($p->{"error"})) {
 						warn $p->{"error"};
 					} else {
 						push (@{$self->{"data"}}, $p->{"data"}->[0]);
 					}
+					last if !($ans = $sth->fetchrow_hashref());
 				}
-				#return $self->{"data"};
+				return;
 			} else {
 				if (!$self->get_from_habr()) {
 					return;
 				}
-				my @users;
-				for my $i (keys $self->{"used"}) {
-					push(@users, $i);
-				}
-				$self->{"query"} = "update posts set commenters=\"".join(',', @users)."\", author_comment=".$self->{"author_comment"}.", amount_commenters=".scalar(@users)." where id=".$info->{"id"};
+				$self->{"query"} = "update posts set author_comment=".$self->{"author_comment"}." where id=".$info->{"id"};
 			}
 		}
 	} else {
 		my $p = Local::Post->new("post_id" => $self->{"post_id"}, "refresh" => $self->{"refresh"});
 		$p->get_info();
+		$self->{"author"} = $p->{"data"}->[0]->{"author"};
 		if (exists($p->{"error"})) {
 			$self->{"error"} = $p->{"error"};
 		} else {

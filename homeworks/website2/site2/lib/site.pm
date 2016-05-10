@@ -75,6 +75,17 @@ sub get_info_user {
 	close($users);
 	return undef;
 }
+
+hook 'before' => sub {
+	if (request->path_info eq "/register") {
+		my $file;
+		if (!open($file, "<", $user_file_path)) {
+			open($file, ">", $user_file_path);
+			print $file "UserName#UserPassword#UserProject#token#tokenData#1#last_rpc#limit_rpc\n";
+		}
+	}
+};
+
 get '/root' => sub {
 	if (!session("log_in")) {
 		return redirect '/login';

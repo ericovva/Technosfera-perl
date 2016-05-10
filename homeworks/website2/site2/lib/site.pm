@@ -7,6 +7,7 @@ use DDP;
 use rpn;
 use tokenize;
 use evaluate;
+use Dancer::Plugin::EscapeHTML;
 use Dancer::Plugin::Auth::Basic;
 use Dancer::Request;
 use LWP::UserAgent;
@@ -39,7 +40,7 @@ sub exist_login {
 	my $login = shift;
 	while (my $line = <$users>) {
 		chomp($line);
-		my ($login_ex) = ($line =~ m/^(.*?)#/);
+		my ($login_ex) = ($line =~ m/^(.*?)\|/);
 		#print "login_ex: $login_ex \n";
 		if ($login_ex eq $login) {
 			close($users);
@@ -56,9 +57,9 @@ sub get_info_user {
 	my $login = shift;
 	while (my $line = <$users>) {
 		chomp($line);
-		my ($login_ex) = ($line =~ m/^(.*?)#/);
+		my ($login_ex) = ($line =~ m/^(.*?)\|/);
 		if ($login_ex eq $login) {
-			my @res = my ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc) = split('#', $line);
+			my @res = my ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc) = split('\\|', $line);
 			my $res = {
 				"login" => $name,
 				"pass" => $pass,
@@ -81,7 +82,7 @@ hook 'before' => sub {
 		my $file;
 		if (!open($file, "<", $user_file_path)) {
 			open($file, ">", $user_file_path);
-			print $file "UserName#UserPassword#UserProject#token#tokenData#1#last_rpc#limit_rpc\n";
+			print $file "UserName|UserPassword|UserProject|token|tokenData|1|last_rpc|limit_rpc\n";
 		}
 	}
 };
@@ -109,7 +110,7 @@ get '/root' => sub {
 			while (my $line = <$users>) {
 				chomp($line);
 				$content .= "<tr>";
-				my @prop = split('#', $line);
+				my @prop = split('\\|', $line);
 				for my $i (@prop) {
 					$content .= "<td>".$i."</td>";
 				}
@@ -117,7 +118,7 @@ get '/root' => sub {
 			}
 			close($users);
 			$content .= "</table>";
-			$templ->{"user_name"} = session("user_name");
+			$templ->{"user_name"} = escape_html(session("user_name"));
 			$templ->{"content"} = $content;
 			template 'root' => $templ;
 		}
@@ -127,7 +128,7 @@ any ['get', 'post'] => '/mypage' => sub {
 	if (!session("log_in")) {
 		return redirect '/login';
 	} else {
-		my $templ = {user_name => session("user_name"), auth_token => session("auth_token")};
+		my $templ = {user_name => escape_html(session("user_name")), auth_token => session("auth_token")};
 		if (param "change") {
 			$templ->{"info_for_user"} = "Данные успешно изменены";
 		} elsif (param "no_info") {
@@ -176,7 +177,7 @@ post '/delete' => sub {
 		my @new_list;
 		while(my $line = <$file>) {
 			chomp($line);
-			my ($login) = ($line =~ m/^(.*?)#/);
+			my ($login) = ($line =~ m/^(.*?)\|/);
 			if ($login ne param "who") {
 				push(@new_list, $line);
 			}
@@ -234,10 +235,10 @@ post '/change_data' => sub {
 		my @root_prop_names = ("root", "last_rpc", "limit_rpc");
 		my %param;
 		for my $i (@prop_names) {
-			$param{$i} = param $i if param $i;
+			$param{$i} = escape_html(param($i)) if param $i;
 		}
 		for my $i (@root_prop_names) {
-			$param{$i} = param $i if param $i;
+			$param{$i} = escape_html(param($i)) if param $i;
 		}
 		if (defined param "is_root") {
 			$param{param "change_value"} = param "value";
@@ -270,9 +271,9 @@ post '/change_data' => sub {
 		while (my $line = <$users>) {
 			chomp($line);
 			if (!$cont) {
-				my ($login_ex) = ($line =~ m/^(.*?)#/);
+				my ($login_ex) = ($line =~ m/^(.*?)\|/);
 				if ($login_ex eq $login) {
-					$line = join('#', @user_prop);
+					$line = join('|', @user_prop);
 					$cont = 1;
 				}
 			}
@@ -293,7 +294,6 @@ post '/change_data' => sub {
 			return redirect '/mypage?change=1';
 		}
 	}
-	return "hello";
 };
 
 any ['get', 'post'] => '/register' => sub {
@@ -319,7 +319,7 @@ any ['get', 'post'] => '/register' => sub {
 		my $users;
 		open($users, ">>", $user_file_path);
 		#login.password.project.token.token_data.root.last_rpc.limit_rpc
-		print $users $login."#".$pass."#".$projectName."#"."NoToken"."#"."NoTokenData"."#"."0"."#"."0"."#"."100"."\n";
+		print $users $login."|".$pass."|".$projectName."|"."NoToken"."|"."NoTokenData"."|"."0"."|"."0"."|"."100"."\n";
 		close($users);
 		return redirect '/register?good=1';
 	} elsif (param "good") {
@@ -356,7 +356,7 @@ post '/check_login' => sub {
 	open($users, "<", $user_file_path);
 	while (my $line = <$users>) {
 		chomp($line);
-		my ($login_ex, $pass_ex) = split('#', $line);
+		my ($login_ex, $pass_ex) = split('\\|', $line);
 		if ($login_ex eq $login and $pass_ex eq $pass) {
 			session "log_in" => 1;
 			session "user_name" => $login;

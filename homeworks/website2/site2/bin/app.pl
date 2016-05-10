@@ -21,14 +21,14 @@ xmlrpc '/rpc' => sub {
 	my @user_rows;
 	while (my $line = <$user_file>) {
 		chomp($line);
-		my ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc) = split('#', $line);
+		my ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc) = split('\\|', $line);
 		if ($token_data !~ /[^0-9]/g) {
 			if ($cur_time - $token_data <= config->{"default_token_live"} and ($cur_time - $last_rpc > $limit_rpc or $last_rpc == 0)) {
 				$users->{$name} = $token;
 				$last_rpc = time;
 			}
 		}
-		push(@user_rows, join('#', ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc)));
+		push(@user_rows, join('|', ($name, $pass, $project, $token, $token_data, $root, $last_rpc, $limit_rpc)));
 	}
 	close($user_file);
 	open($user_file, ">", $user_file_path);

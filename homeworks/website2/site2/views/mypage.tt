@@ -3,7 +3,7 @@ Hello, <% user_name %><br />
 <div id="info_for_user"><% info_for_user %></div>
 <form method="post" action="/change_data">
 	Login:<input name="login" type = "text" /><br/>
-	Password:<input name="pass" type="text" /><br/>
+	Password:<input name="pass" type="password" /><br/>
 	Project:<input name="project" type="text" /><br />
 	<input type="hidden" name="from" value ="<%user_name%>" />
 	<input type="hidden" name="who" value="<%user_name%>" />

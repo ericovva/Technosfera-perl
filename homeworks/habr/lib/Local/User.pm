@@ -63,6 +63,7 @@ sub get_from_habr {
 		if (exists($self->{"data"}->[0]->{"rank"})) {
 			return 1;
 		} else {
+			#p $self;
 			$self->{"error"} = "Ошибка во время запроса данных о пользователе: ".$self->{"nickname"};
 			return 0;
 		}
@@ -101,6 +102,7 @@ sub get_from_habr {
 			$self->{"again"} = 1;
 			return $self->get_from_habr();
 		} else {
+			#p $self;
 			$self->{"error"} = "Ошибка во время запроса данных о пользователе: ".$self->{"nickname"};
 			return 0;
 		}

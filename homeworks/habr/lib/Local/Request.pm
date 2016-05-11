@@ -44,7 +44,7 @@ sub config {
 }
 
 sub send {
-	my ($self, $all) = @_;
+	my ($self, $all, $params) = @_;
 	my $dbh = DBI->connect(
 		$self->{"config"}->param("database.name").$self->{"config"}->param("database.filename"), 
 		$self->{"config"}->param("database.login"), 
@@ -54,7 +54,7 @@ sub send {
 	my $sth = $dbh->prepare($self->{"query"});
 	#p $self;
 	print '.';
-	if ($sth->execute()) {
+	if ($sth->execute(@{$params})) {
 		return 1 if $all == -1;
 	} else {
 		return 0;

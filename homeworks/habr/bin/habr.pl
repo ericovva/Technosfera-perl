@@ -102,9 +102,9 @@ if ($ARGV[0] eq "create_db") {
 		$refresh = 0;
 	}
 	$p = Local::Request->new(
-		"query" => "select p.theme, p.rank, p.stars, p.views, p.author, p.id from commenters c join posts p where c.id=p.id group by c.id having count(distinct c.nickname) < $n"
+		"query" => "select p.theme, p.rank, p.stars, p.views, p.author, p.id from commenters c join posts p where c.id=p.id group by c.id having count(distinct c.nickname) < ?"
 	);
-	my $sth = $p->send(1);
+	my $sth = $p->send(1, [$n]);
 	my @result;
 	while (my $row_res = $sth->fetchrow_hashref) {
 		push(@result, $row_res);

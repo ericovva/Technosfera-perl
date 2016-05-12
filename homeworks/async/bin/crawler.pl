@@ -1,18 +1,20 @@
 #!/usr/bin/env perl
+use 5.010;
+use strict;
 use AnyEvent::HTTP;
+$AnyEvent::HTTP::MAX_PER_HOST = 100;
 use AE;
 use Getopt::Long;
 use HTML::Parser;
 use DDP;
-use 5.010;
-use strict;
+
 my %used;
 my $cv = AE::cv;
-$AnyEvent::HTTP::MAX_PER_HOST = 100;
 my $all = 0;
 my $maxi;
 my $host;
 my $help;
+
 GetOptions("max=i" => \$maxi, "host=s" => \$host, "help" => \$help);
 if (defined $help) {
 	print "--max=1000 (Сколько ссылок найти)\n";
@@ -28,7 +30,9 @@ if ($host !~ /https?:\/\/(.*?)\..+/) {
 my $host_name = $1;
 p $host_name;
 $| = 1;
+
 sub len {
+	#длина числа (для статус-строки)
 	my $x = shift;
 	my $all = 0;
 	while ($x > 0) {
@@ -38,7 +42,8 @@ sub len {
 	return $all;
 }
 
-sub check_and_add {
+sub check {
+	#ф-ия, которая проверяет, 
 	my ($prev, $text) = @_;
 	$text =~ s/\#(.*)//;
 	return undef if not defined($text);
@@ -94,6 +99,7 @@ sub add_into_res{
 }
 
 sub print_next {
+	#обновляет статус-строку
 	$all++;
 	print "$all / $maxi";
 	if ($all != $maxi) {
@@ -106,8 +112,10 @@ sub print_next {
 }
 
 sub web_crawler {
+	#ф-ия замыкание, запоминаем ссылку, которую мы обрабатываем
 	my ($href) = @_;
 	return sub {
+		#обрабатываем, когда загрузили страницу
 		my $content = $_[0];
 		print_next();
 		$used{$href} = $_[1]->{"content-length"};
@@ -124,12 +132,10 @@ sub web_crawler {
 					my ($tagname, $attr) = @_;
 					if ($tagname eq "a" and exists($attr->{"href"})) {
 						my $a_href = $attr->{"href"};
-						$a_href = check_and_add($href, $a_href);
+						$a_href = check($href, $a_href);
 						if (defined $a_href and (scalar(keys(%used)) < $maxi)) {
-							if ($all == $maxi) {
-								$cv->send();
-								return;
-							}
+							#в хеше used у нас сайты, на которых висят callback'и по сути это наша "очередь"
+							#поэтому мы не будем добавлять, если в "очереди" уже $maxi элементов
 							$used{$a_href} = 0;
 							push(@result, $a_href);
 						}
@@ -143,6 +149,10 @@ sub web_crawler {
 			my $callback = web_crawler($i);
 			http_get($i, $callback);
 		}
+		if ($all == $maxi) {
+			$cv->send();
+			return;
+		}
 		$cv->end;
 	}
 }
@@ -151,6 +161,7 @@ my $first_func = web_crawler($host);
 $cv->begin;
 http_get($host, $first_func);
 $cv->recv();
+
 for my $i (0..9) {
 	print ($i + 1)."\n";
 	print "\tName: $top10_host[$i] \n\tSize: $top10_val[$i]\n";

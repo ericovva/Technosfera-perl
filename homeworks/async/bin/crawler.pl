@@ -167,6 +167,7 @@ for my $i (0..9) {
 	printf "%.4f" ,($top10_val[$i] / (1024 * 1024));
 	print "Mb\n";
 }
+unlink "site.html";
 #my $file;
 #open($file, ">", $filename);
 #for my $i (keys %used) {

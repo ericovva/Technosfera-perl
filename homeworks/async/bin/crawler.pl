@@ -19,7 +19,6 @@ GetOptions("max=i" => \$maxi, "host=s" => \$host, "help" => \$help);
 if (defined $help) {
 	print "--max=1000 (Сколько ссылок найти)\n";
 	print "--host=https://habrahabr.ru/ (Хост)\n";
-	print "--filename=log.txt (Куда сохранить результат) \n";
 	exit;
 }
 die "Нет max" if not defined $maxi;
@@ -164,7 +163,9 @@ $cv->recv();
 
 for my $i (0..9) {
 	print ($i + 1)."\n";
-	print "\tName: $top10_host[$i] \n\tSize: $top10_val[$i]\n";
+	print "\tName: $top10_host[$i] \n\tSize: ";
+	printf "%.4f" ,($top10_val[$i] / (1024 * 1024));
+	print "Mb\n";
 }
 #my $file;
 #open($file, ">", $filename);

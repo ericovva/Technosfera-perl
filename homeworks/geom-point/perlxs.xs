@@ -2,13 +2,13 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
-
 #include "ppport.h"
 
 #include "const-c.inc"
 
 typedef struct { double x, y; } GEOM_POINT;
-typedef struct { double x, y, z; } GEOM_POINT_3D;
+typedef struct { double x, y, r; } GEOM_SIRCLE;
+typedef struct { double** arr; int n, m;} MATRIX;
 
 MODULE = Local::perlxs                PACKAGE = Local::perlxs                
 
@@ -137,15 +137,66 @@ double distance_pointstruct(point1, point2)
     RETVAL = ret;
     OUTPUT:
     RETVAL
+    
+    
+double distance_to_sircle(point, sircle)
+	GEOM_POINT *point
+	GEOM_SIRCLE *sircle
+	CODE:
+	double ret;
+	ret = fabs(sqrt((point->x - sircle->x) * (point->x - sircle->x) + (point->y - sircle->y) * (point->y - sircle->y)) - sircle->r);
+	free(point);
+	free(sircle);
+	RETVAL = ret;
+	OUTPUT:
+	RETVAL
+	
+GEOM_POINT* cross_point_sircle(point, sircle)
+	GEOM_POINT *point
+	GEOM_SIRCLE *sircle
+	CODE:
+	if (sqrt((point->x - sircle->x) * (point->x - sircle->x) + (point->y - sircle->y) * (point->y - sircle->y)) < sircle->r) {
+		croak("Point into sircle, no crossing");
+	}
+	GEOM_POINT* vec = malloc(sizeof(GEOM_POINT));
+	vec->x = point->x - sircle->x;
+	vec->y = point->y - sircle->y;
+	double len = sqrt(vec->x * vec->x + vec->y * vec->y);
+	vec->x *= sircle->r / len;
+	vec->y *= sircle->r / len;
+	free(point);
+	free(sircle);
+	RETVAL = vec;
+	OUTPUT:
+	RETVAL
 
-double distance3d_pointstruct(point1, point2)
-    GEOM_POINT_3D *point1
-    GEOM_POINT_3D *point2
-    CODE:
-    double ret;
-    ret = sqrt( pow(point1->x-point2->x,2) + pow(point1->y-point2->y,2) + pow(point1->z-point2->z,2));
-    free(point1);
-    free(point2);
-    RETVAL = ret;
-    OUTPUT:
-    RETVAL
+MATRIX* mult(A, B)
+//n k
+//k m
+	MATRIX* A
+	MATRIX* B
+	CODE:
+		if (A->m != B->n) croak("Matrixes must be N x K and K x M");
+		int i, j, k;
+		MATRIX* C = (MATRIX*) malloc(sizeof(MATRIX));
+		C->n = A->n;
+		C->m = B->m;
+		C->arr = (double**) malloc(sizeof(double*) * A->n);
+		for (i = 0; i < A->n; i++) {
+			C->arr[i] = (double*) malloc(sizeof(double) * B->m);
+			for (j = 0; j < B->m; j++) {
+				C->arr[i][j] = 0;
+				for (k = 0; k < A->m; k++) {
+					C->arr[i][j] += A->arr[i][k] * B->arr[k][j];
+				}
+			}
+		}
+
+		free(A);
+		free(B);
+		RETVAL = C;
+		OUTPUT:
+		RETVAL
+		
+		
+	

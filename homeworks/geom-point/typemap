@@ -1,9 +1,39 @@
 TYPEMAP
 GEOM_POINT* T_HVREF
-HV* T_HVREF_3D
-GEOM_POINT_3D* T_HVREF_3D
+HV* T_HVREF_SIRCLE
+GEOM_SIRCLE* T_HVREF_SIRCLE
+MATRIX* T_AVREF
 
 INPUT
+T_HVREF_SIRCLE
+	{
+	double sircle_x, sircle_y, sircle_r;
+	if (!(SvOK($arg) && SvROK($arg))) {
+		croak(\"Sircle object must be a hashref\");
+	}
+	SV* _sircle = SvRV($arg);
+	if (SvTYPE(_sircle) != SVt_PVHV) {
+		croak(\"Sircle object must be a hashref\");
+	}
+	HV* sircle_hash = (HV*) _sircle;
+	if (!(hv_exists(sircle_hash, \"x\", 1) && 
+		 (hv_exists(sircle_hash, \"y\", 1)) && 
+		 (hv_exists(sircle_hash, \"r\", 1)))) {
+		croak(\"Sircle mush have x, y, r params\");
+	}
+	SV **sircle_x_sv = hv_fetch(sircle_hash, \"x\", 1, 0);	
+	SV **sircle_y_sv = hv_fetch(sircle_hash, \"y\", 1, 0);
+	SV **sircle_r_sv = hv_fetch(sircle_hash, \"r\", 1, 0);
+	if (!(sircle_x_sv && sircle_y_sv && sircle_r_sv)) {
+		croak(\"x, y, r, must be not NULL\");
+	}
+	sircle_x = SvNV(*sircle_x_sv);
+	sircle_y = SvNV(*sircle_y_sv);
+	sircle_r = SvNV(*sircle_r_sv);
+	$type pt = malloc(sizeof(GEOM_SIRCLE));
+	pt->x = sircle_x; pt->y = sircle_y; pt->r = sircle_r;
+	sircle = ($type)pt;
+	}
 T_HVREF 
 	{
 	double typemap_x, typemap_y;
@@ -22,32 +52,77 @@ T_HVREF
 	pt->x = typemap_x; pt->y = typemap_y;
 	$var = ($type)pt;
 	}
-
-T_HVREF_3D
+T_AVREF
 	{
-	double typemap_x, typemap_y, typemap_z;
-	if(!(SvOK($arg) && SvROK($arg))){ croak(\"Point must be a hashref\"); }
-	SV *typemap__point = SvRV($arg);
-	if( SvTYPE(typemap__point) != SVt_PVHV ){croak(\"Point must be a hashref\");}
-	HV *typemap_point = (HV*)typemap__point;
-	if(!(hv_exists(typemap_point, \"x\", 1) && hv_exists(typemap_point, \"y\", 1) && hv_exists(typemap_point, \"z\", 1))){
-		croak(\"Point mush contain x and y keys\");
+	if (!(SvOK($arg) && SvROK($arg))) {
+		croak(\"argument must be a arrayref\");
 	}
-	SV **typemap__x = hv_fetch(typemap_point, \"x\", 1, 0);
-	SV **typemap__y = hv_fetch(typemap_point, \"y\", 1, 0);
-	SV **typemap__z = hv_fetch(typemap_point, \"z\", 1, 0);
-	if( !(typemap__x && typemap__y && typemap__z)){ croak(\"Non allow NULL in x or y or z coords\");}
-	typemap_x = SvNV(*typemap__x);
-	typemap_y = SvNV(*typemap__y);
-	typemap_z = SvNV(*typemap__z);
-	$type pt = malloc(sizeof(GEOM_POINT_3D));
-	pt->x = typemap_x; pt->y = typemap_y; pt->z = typemap_z;
-	$var = ($type)pt;
+	SV* _matrix = SvRV($arg);
+	if (SvTYPE(_matrix) != SVt_PVAV) {
+		croak(\"argument must be a arrayref\");
+	}
+	AV* a = (AV*) _matrix;
+	int n = av_top_index(a);
+	int m;
+	int saveM = -1;
+	int i = 0, j = 0;
+	$type result = ($type) malloc(sizeof(MATRIX));
+	result->arr = (double**) malloc(sizeof(double*) * n);
+	for (i = 0; i <= n; i++) {
+		SV **arr = av_fetch(a, i, 0);
+		AV* subarr;
+		if (!(SvOK(*arr) && SvROK(*arr))) {
+			croak(\"Matrix must contain an arrayref\");
+		}
+		if (SvTYPE(SvRV(*arr)) != SVt_PVAV) {
+			croak(\"Matrix must contain an arrayref\");
+		}
+		subarr = (AV*) SvRV(*arr);
+		m = av_top_index(subarr);
+		
+		if (saveM == -1) saveM = m;
+		else {
+			if (saveM != m) {
+				croak(\"Matrix must be rectangular\");
+			}
+		}
+		result->arr[i] = (double*) malloc(sizeof(double) * m);
+		for (j = 0; j <= m; j++) {
+			SV** elem = av_fetch(subarr, j, 0);
+			if (!elem) croak(\"Elements must be not NULL\");
+			double element = SvNV(*elem);
+			result->arr[i][j] = element;
+		}
+	}
+	result->n = n + 1;
+	result->m = m + 1;
+	$var = ($type) result;
 	}
 
 OUTPUT
 T_HVREF
-	croak(\"Unimplemented output $type\");
-
-T_HVREF_3D
-	croak(\"Unimplemented output $type\");
+	{
+	HV* res = newHV();
+	hv_stores(res, "x", newSVnv($var->x));
+	hv_stores(res, "y", newSVnv($var->y));
+	$arg = newRV_noinc((SV *)res);
+	}
+T_HVREF_SIRCLE
+	{
+		croak(\"no\");
+	}
+T_AVREF
+	{
+	AV* res = newAV();
+	int i, j;
+	for (i = 0; i < $var->n; i++) {
+		AV* sub_res = newAV();
+		for (j = 0; j < $var->m; j++) {
+			SV* elem = newSVnv($var->arr[0][j]);
+			av_push(sub_res, elem);
+		}
+		SV* sub_res_ref = newRV((SV*)sub_res);
+		av_push(res, sub_res_ref);
+	}
+	$arg = newRV((SV*)res);
+	}

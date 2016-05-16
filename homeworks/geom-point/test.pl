@@ -1,4 +1,6 @@
 use Local::perlxs ':all';
+use FindBin;
+use lib "$FindBin::Bin/lib/Local";
 use mult_matrix 'mult_perl';
 use DDP;
 

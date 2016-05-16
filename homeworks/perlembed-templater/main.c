@@ -11,22 +11,23 @@ void error_tmpl(char *message) {
     exit(1);
 }
 
-static void
-print_var(char *var_name, char *var)
-{
-    HV *h_var;
-    h_var = get_hv(var_name, 0);
-    if(!h_var) error_tmpl("Vars hash not exist");
-    SV **sr_var = hv_fetch(h_var, var, (int)strlen(var), 0);
-    if(!sr_var){ error_tmpl("Var not exist");};
-    if(SvTYPE(*sr_var) == SVt_IV || SvTYPE(*sr_var) == SVt_PVIV){ printf( "%li", SvIV(*sr_var)); }
-    else if(SvTYPE(*sr_var) == SVt_NV || SvTYPE(*sr_var) == SVt_PVNV){ printf("%f", SvNV(*sr_var)); }
-    else if(SvTYPE(*sr_var) == SVt_PV){ printf("%s", SvPV_nolen(*sr_var)); }
-    else { error_tmpl("Incompatible type of var"); }
+void statistic() {
+	printf("\n");
+	HV *hash;
+	hash = get_hv("Plugin::state", 0);
+	if (!hash) error_tmpl("end");
+	HE* value;
+	char * key;
+	int len;
+	hv_iterinit(hash);
+	while (value = hv_iternext(hash)) {
+		int val = SvIV(HeVAL(value));
+		key = hv_iterkey(value, &len);
+		printf("%s => %d \n", key, val);
+	}
 }
 
-static void
-call_func(char *func_name, int argv, char **argc )
+static void call_func(char *func_name, int argv, char **argc )
 {
     int count, f;
     dSP;                            /* initialize stack pointer         */
@@ -51,15 +52,76 @@ call_func(char *func_name, int argv, char **argc )
     FREETMPS;                       /* free that return value           */
     LEAVE;                          /* ...and the XPUSHed "mortal" args */
 }
+static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+                                'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                                'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                                'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+                                'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                                'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+                                'w', 'x', 'y', 'z', '0', '1', '2', '3',
+                                '4', '5', '6', '7', '8', '9', '+', '/', '='};
 
+char * Read(FILE * fh, int *n) {
+	int maxi = 100;
+	char * str = (char*) malloc(sizeof(char) * maxi);
+	*n = 0;
+	char c;
+	while (!feof(fh)) {
+		fscanf(fh, "%c", &c);
+		str[*n] = c;
+		(*n)++;
+		if (*n == maxi) {
+			str = (char*) realloc(str, 2 * maxi);
+			maxi *= 2;
+		}
+	}
+	(*n) -= 2;
+	return str;
+}
+int find_code(char c) {
+	int i;
+	for (i = 0; i < sizeof(encoding_table) / sizeof(char); i++) {
+		if (encoding_table[i] == c) return i;
+	}
+	return -1;
+}
+char * base64_encode(char * str, int len, int* out_len) {
+	int i = 0;
+	char* res = (char*)malloc(sizeof(char) * (3 * len) / 4);
+	(*out_len) = 0;
+	for (i = 0; i < len; i += 4) {
+		char a = str[i], b = str[i + 1], c = str[i + 2], d = str[i + 3];
+		a = (char) find_code(a); b = (char) find_code(b);
+		c = (char) find_code(c); d = (char) find_code(d);
+		if (c != 64 && d != 64) {
+			char A = (a << 2) + ((b & 0x30) >> 4);
+			char B = ((b & 0xF) << 4) + (c >> 2);
+			char C = ((c & 0x3) << 6) + d;
+			//printf("%c%c%c", A, B, C);
+			res[(*out_len)++] = A;
+			res[(*out_len)++] = B;
+			res[(*out_len)++] = C;
+		} else if(c != 64) {
+			char A = (a << 2) + ((b & 0x30) >> 4);
+			char B = ((b & 0xF) << 4) + (c >> 2);
+			//printf("%c%c", A, B);
+			res[(*out_len)++] = A;
+			res[(*out_len)++] = B;
+		} else {
+			char A = (a << 2) + ((b & 0x30) >> 4);
+			//printf("%c", A);
+			res[(*out_len)++] = A;
+		}
+	}
+	return res;
+}
 int main (int argc, char **argv, char **env)
 {
     char *include_dir, *module;
     FILE *template;
     char *str, *buf, *found, *p_func, *arg_begin, *arg_end, tmp, *func_name, **args, *pkg_name, *var_name;
     int in_tag = 0, cur_param = 0, f, exitstatus = 0;
-    const char *begin_tag = "<!--[", *end_tag = "]-->";
-    const int max_params = 10, chunk_size = 1024;
+	const int max_params = 10;
 
     include_dir = malloc(sizeof(char)*strlen(argv[3])+3);
     module = malloc(sizeof(char)*strlen(argv[1])+3);
@@ -84,96 +146,14 @@ int main (int argc, char **argv, char **env)
     }
     exitstatus = perl_run(my_perl);
 
-    template = fopen(argv[2], "r");
-    if(template == NULL){ error_tmpl("Error open template"); }
-    str = malloc(sizeof(char) * chunk_size);
-    buf = str;
-    while(strlen(str) || !feof(template)){
-        if(!feof(template)) fread(buf, sizeof(char), chunk_size-strlen(str), template);
-        found = 0;
-        if(in_tag){
-            found = strstr(str, end_tag);
-        }
-        else {
-            found = strstr(str, begin_tag);
-        }
-        if( found != NULL ){
-            if(in_tag){
-                in_tag = 0;
-                *found = '\0';
-                p_func = strchr(str, '(');
-                if(p_func != NULL){
-                    cur_param = 0;
-                    func_name = malloc(sizeof(char)*(p_func-str+strlen(pkg_name)+1));
-                    *p_func = '\0';
-                    strcpy(func_name, pkg_name);
-                    strcat(func_name, str);
-                    func_name[(p_func-str)+strlen(pkg_name)] = '\0';
-                    arg_begin = p_func+1;
-                    arg_end = arg_begin;
-                    while( strlen(arg_begin) && ((arg_end = strchr(arg_begin, ',')) || (arg_end = strchr(arg_begin, ')')))){
-                        if(*arg_end == ')' && arg_end == arg_begin && cur_param) error_tmpl("Error parse func");
-                        if(*arg_end != ')' && *(arg_end+1) == '\0') error_tmpl("Error parse func");
-                        if(cur_param > max_params) error_tmpl("To many params");
-                        if(arg_end != arg_begin){
-                            args[cur_param] = malloc(sizeof(char)*(arg_end-arg_begin+1));
-                            strncpy(args[cur_param], arg_begin, arg_end-arg_begin);
-                            args[cur_param][arg_end-arg_begin] = '\0';
-                            cur_param++;
-                        }
-                        if(*arg_end == ')') {
-                            call_func(func_name, cur_param, args);
-                        }
-                        arg_begin=arg_end+1;
-                    }
-                    if(strlen(arg_begin) != 0){ error_tmpl("Error parse func"); }
-                    for(f=0; f<cur_param; f++){
-                        free(args[f]);
-                    }
-                    free(func_name);
-                }
-                else{
-                    var_name = malloc(sizeof(char)*(strlen("vars")+strlen(pkg_name)+1));
-                    strcpy(var_name, pkg_name);
-                    strcat(var_name, "vars");
-                    var_name[strlen("vars")+strlen(pkg_name)] = '\0';
-                    print_var(var_name, str);
-                }
-                memmove(str, found+strlen(end_tag), strlen(found+1)-strlen(end_tag)+2);
-            }
-            else {
-                in_tag = 1;
-                *found = '\0';
-                printf( "%s", str );
-                memmove(str, found+strlen(begin_tag), strlen(found+1)-strlen(begin_tag)+2);
-            }
-        }
-        else {
-            if(in_tag){
-                error_tmpl("Error parse tag");
-            }
-            else{
-                if(strlen(str) > strlen(begin_tag)){
-                    tmp = str[strlen(str) - strlen(begin_tag)];
-                    str[strlen(str) - strlen(begin_tag)] = '\0';
-                    printf( "%s", str );
-                    str[strlen(str) - strlen(begin_tag)] = tmp;
-                    memmove(str, str + strlen(str)-strlen(begin_tag), strlen(str)-strlen(begin_tag)+1);
-                }
-                else {
-                    printf("%s", str);
-                    *str = '\0';
-                }
-            }
-        }
-        buf = str + strlen(str);
-    }
-    if(in_tag){
-        error_tmpl("Unclosed tag");
-    }
-    else{
-        printf( "%s", str);
-    }
+	FILE * fh = fopen(argv[2], "r");
+	int n;
+	int m;
+	char * strin = Read(fh, &n);
+	char * res = base64_encode(strin, n, &m);
+	printf("%s", res);
+	call_func("Plugin::parse", 1, &res);
+    statistic();
     free(pkg_name);
     free(args);
     perl_destruct(my_perl);

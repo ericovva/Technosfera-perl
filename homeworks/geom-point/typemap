@@ -124,5 +124,6 @@ T_AVREF
 		SV* sub_res_ref = newRV((SV*)sub_res);
 		av_push(res, sub_res_ref);
 	}
+	free($var);
 	$arg = newRV((SV*)res);
 	}

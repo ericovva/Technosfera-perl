@@ -43,6 +43,8 @@ GEOM_POINT* cross_point_sircle(point, sircle)
 	double len = sqrt(vec->x * vec->x + vec->y * vec->y);
 	vec->x *= sircle->r / len;
 	vec->y *= sircle->r / len;
+	vec->x += sircle->x;
+	vec->y += sircle->y;
 	free(point);
 	free(sircle);
 	RETVAL = vec;
